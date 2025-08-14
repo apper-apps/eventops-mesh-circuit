@@ -424,9 +424,9 @@ const VipReservations = () => {
                         >
                           <ApperIcon name="Trash2" size={16} />
                         </Button>
-                      </div>
+</div>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
