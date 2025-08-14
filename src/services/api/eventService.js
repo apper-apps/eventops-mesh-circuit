@@ -22,13 +22,18 @@ class EventService {
     return { ...event };
   }
 
-  async create(eventData) {
+async create(eventData) {
     await delay(400);
     
     const newId = Math.max(...this.events.map(e => e.Id), 0) + 1;
     const newEvent = {
       Id: newId,
       ...eventData,
+      estimatedTables: eventData.estimatedTables || 0,
+      entrepreneur: eventData.entrepreneur || "",
+      dealType: eventData.dealType || "",
+      customTickets: eventData.customTickets || null,
+      customBars: eventData.customBars || null,
       createdAt: new Date().toISOString()
     };
     

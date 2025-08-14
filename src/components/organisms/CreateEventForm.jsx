@@ -8,25 +8,37 @@ import FormField from "@/components/molecules/FormField";
 import eventService from "@/services/api/eventService";
 
 const CreateEventForm = ({ onSuccess, onCancel }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     title: "",
     date: "",
     venue: "",
     eventType: "",
     estimatedAttendance: "",
+    estimatedTables: "",
+    entrepreneur: "",
+    dealType: "",
+    customTickets: "50",
+    customBars: "50",
     status: "Planificado"
   });
   
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const eventTypes = [
+const eventTypes = [
     "Concierto",
     "Conferencia", 
     "Boda",
     "Corporativo",
     "Festival",
     "Otro"
+  ];
+
+  const dealTypes = [
+    "100% Ours",
+    "80-20 tickets, 50-50 bars",
+    "90-10 tickets, 50% bars",
+    "Custom"
   ];
 
   const handleChange = (e) => {
@@ -37,7 +49,7 @@ const CreateEventForm = ({ onSuccess, onCancel }) => {
     }
   };
 
-  const validateForm = () => {
+const validateForm = () => {
     const newErrors = {};
     
     if (!formData.title.trim()) {
@@ -67,10 +79,35 @@ const CreateEventForm = ({ onSuccess, onCancel }) => {
       newErrors.estimatedAttendance = "La asistencia estimada debe ser mayor a 0";
     }
 
+    if (!formData.estimatedTables || formData.estimatedTables <= 0) {
+      newErrors.estimatedTables = "Las mesas estimadas deben ser mayor a 0";
+    }
+
+    if (!formData.entrepreneur.trim()) {
+      newErrors.entrepreneur = "El empresario/compañía es requerido";
+    }
+
+    if (!formData.dealType) {
+      newErrors.dealType = "El tipo de trato es requerido";
+    }
+
+    if (formData.dealType === "Custom") {
+      const ticketPercent = parseFloat(formData.customTickets);
+      const barPercent = parseFloat(formData.customBars);
+      
+      if (isNaN(ticketPercent) || ticketPercent < 0 || ticketPercent > 100) {
+        newErrors.customTickets = "El porcentaje de tickets debe ser entre 0 y 100";
+      }
+      
+      if (isNaN(barPercent) || barPercent < 0 || barPercent > 100) {
+        newErrors.customBars = "El porcentaje de bars debe ser entre 0 y 100";
+      }
+    }
+
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     
     const newErrors = validateForm();
@@ -84,6 +121,9 @@ const CreateEventForm = ({ onSuccess, onCancel }) => {
       const eventData = {
         ...formData,
         estimatedAttendance: parseInt(formData.estimatedAttendance),
+        estimatedTables: parseInt(formData.estimatedTables),
+        customTickets: formData.dealType === "Custom" ? parseFloat(formData.customTickets) : null,
+        customBars: formData.dealType === "Custom" ? parseFloat(formData.customBars) : null,
         createdAt: new Date().toISOString()
       };
       
@@ -108,7 +148,7 @@ const CreateEventForm = ({ onSuccess, onCancel }) => {
         <p className="text-slate-400">Completa la información para crear tu evento</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+<form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField 
             label="Título del Evento"
@@ -153,6 +193,22 @@ const CreateEventForm = ({ onSuccess, onCancel }) => {
           />
         </FormField>
 
+        <FormField 
+          label="Mesas Estimadas"
+          required
+          error={errors.estimatedTables}
+        >
+          <Input
+            type="number"
+            name="estimatedTables"
+            value={formData.estimatedTables}
+            onChange={handleChange}
+            placeholder="Ej: 25"
+            min="1"
+            error={!!errors.estimatedTables}
+          />
+        </FormField>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField 
             label="Tipo de Evento"
@@ -188,6 +244,83 @@ const CreateEventForm = ({ onSuccess, onCancel }) => {
             />
           </FormField>
         </div>
+
+        <FormField 
+          label="Empresario/Compañía"
+          required
+          error={errors.entrepreneur}
+        >
+          <Select
+            name="entrepreneur"
+            value={formData.entrepreneur}
+            onChange={handleChange}
+            error={!!errors.entrepreneur}
+          >
+            <option value="">Selecciona una opción</option>
+            <option value="Own Event">Own Event</option>
+            <option value="External Partner">External Partner</option>
+            <option value="Corporate Client">Corporate Client</option>
+            <option value="Private Client">Private Client</option>
+          </Select>
+        </FormField>
+
+        <FormField 
+          label="Tipo de Trato"
+          required
+          error={errors.dealType}
+        >
+          <Select
+            name="dealType"
+            value={formData.dealType}
+            onChange={handleChange}
+            error={!!errors.dealType}
+          >
+            <option value="">Selecciona el tipo de trato</option>
+            {dealTypes.map(deal => (
+              <option key={deal} value={deal}>{deal}</option>
+            ))}
+          </Select>
+        </FormField>
+
+        {formData.dealType === "Custom" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField 
+              label="Porcentaje Tickets (%)"
+              required
+              error={errors.customTickets}
+            >
+              <Input
+                type="number"
+                name="customTickets"
+                value={formData.customTickets}
+                onChange={handleChange}
+                placeholder="50"
+                min="0"
+                max="100"
+                step="0.1"
+                error={!!errors.customTickets}
+              />
+            </FormField>
+
+            <FormField 
+              label="Porcentaje Bars (%)"
+              required
+              error={errors.customBars}
+            >
+              <Input
+                type="number"
+                name="customBars"
+                value={formData.customBars}
+                onChange={handleChange}
+                placeholder="50"
+                min="0"
+                max="100"
+                step="0.1"
+                error={!!errors.customBars}
+              />
+            </FormField>
+          </div>
+        )}
 
         <div className="flex gap-4 pt-4">
           <Button
