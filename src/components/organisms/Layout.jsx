@@ -14,16 +14,17 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
 
         {/* Main Content */}
         <div className="lg:pl-64">
-          <div className="sticky top-0 z-40 lg:mx-auto lg:max-w-none lg:px-8">
+<div className="sticky top-0 z-40 lg:mx-auto lg:max-w-none lg:px-8">
             {/* Header */}
             <Header 
               title="EventOps Pro"
               onMenuClick={() => setSidebarOpen(true)}
             />
+          </div>
           
           <main className="p-4 lg:p-8">
             <Outlet />
-</main>
+          </main>
         </div>
       </div>
     </FilterProvider>
