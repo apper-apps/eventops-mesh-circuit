@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'react-toastify/dist/ReactToastify.css';
+
+@layer base {
+  * {
+    @apply border-gray-600/20;
+  }
+  
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply antialiased;
+  }
+  
+  body {
+    @apply bg-background text-slate-100 min-h-screen;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-surface/60 backdrop-blur-md border border-slate-600/20;
+  }
+  
+  .gradient-border {
+    @apply relative before:absolute before:inset-0 before:p-[1px] before:bg-gradient-to-r before:from-primary before:to-accent before:rounded-lg;
+  }
+  
+  .gradient-border > * {
+    @apply relative bg-surface rounded-lg;
+  }
+  
+  .card-shadow {
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-200 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02];
+  }
+}
+
+/* Toast Overrides */
+.Toastify__toast-container {
+  @apply text-sm font-medium;
+}
+
+.Toastify__toast {
+  @apply bg-surface border border-slate-600/20 rounded-lg shadow-xl;
+}
+
+.Toastify__toast--success {
+  @apply bg-gradient-to-r from-success/20 to-surface border-success/30;
+}
+
+.Toastify__toast--error {
+  @apply bg-gradient-to-r from-error/20 to-surface border-error/30;
+}
+
+.Toastify__toast--warning {
+  @apply bg-gradient-to-r from-warning/20 to-surface border-warning/30;
+}
+
+.Toastify__toast--info {
+  @apply bg-gradient-to-r from-info/20 to-surface border-info/30;
+}
+
+.Toastify__progress-bar {
+  @apply bg-gradient-to-r from-primary to-accent;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-600 rounded-lg;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-500;
+}
