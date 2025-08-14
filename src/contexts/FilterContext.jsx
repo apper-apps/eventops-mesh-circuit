@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { eventService } from '@/services/api/eventService';
+import eventService from '@/services/api/eventService';
 
 const FilterContext = createContext();
 
