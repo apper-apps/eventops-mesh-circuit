@@ -3,11 +3,13 @@ import { motion } from "framer-motion";
 import EventFilters from "@/components/organisms/EventFilters";
 import EventList from "@/components/organisms/EventList";
 import CreateEventForm from "@/components/organisms/CreateEventForm";
+import { useFilters } from "@/contexts/FilterContext";
 
 const Events = () => {
+  const { globalFilters, getFilteredData } = useFilters();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [filters, setFilters] = useState({
+  const [localFilters, setLocalFilters] = useState({
     search: "",
     status: "all",
     type: "all"
@@ -56,16 +58,18 @@ const Events = () => {
         <p className="text-slate-400">Administra todos tus eventos desde un solo lugar</p>
       </div>
 
-      <EventFilters
-        filters={filters}
-        onFiltersChange={setFilters}
+<EventFilters
+        filters={localFilters}
+        onFiltersChange={setLocalFilters}
         onCreateEvent={handleCreateEvent}
+        globalFilters={globalFilters}
       />
 
       <EventList
-        filters={filters}
+        filters={{ ...localFilters, ...globalFilters }}
         onEventClick={handleEventClick}
         onCreateEvent={handleCreateEvent}
+        getFilteredData={getFilteredData}
       />
     </motion.div>
   );
