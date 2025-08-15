@@ -4,12 +4,13 @@ import SidebarItem from "@/components/molecules/SidebarItem";
 import ApperIcon from "@/components/ApperIcon";
 
 const Sidebar = ({ isOpen, onClose }) => {
-  const menuItems = [
+const menuItems = [
     { to: "/", icon: "LayoutDashboard", label: "Dashboard" },
     { to: "/events", icon: "Calendar", label: "Eventos", badge: "3" },
     { to: "/budgets", icon: "Calculator", label: "Presupuestos" },
     { to: "/vip-reservations", icon: "Crown", label: "Reservas VIP" },
-    { to: "/bar-inventory", icon: "Package", label: "Bar e Inventario" }
+    { to: "/bar-inventory", icon: "Package", label: "Bar e Inventario" },
+    { to: "/financial-accounts", icon: "Wallet", label: "Cuentas Financieras" }
   ];
 
 // Desktop sidebar
