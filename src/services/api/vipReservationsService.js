@@ -28,7 +28,7 @@ class VipReservationsService {
     return { ...reservation }; // Return copy
   }
 
-  async create(reservationData) {
+async create(reservationData) {
     await delay();
     
     // Generate new ID and ignore any ID in input data
@@ -36,7 +36,7 @@ class VipReservationsService {
       ...reservationData,
       Id: nextId++,
       creationDate: new Date().toISOString(),
-      lastPaymentDate: reservationData.advancePaid > 0 ? new Date().toISOString() : null
+      lastPaymentDate: reservationData.advancePaid && reservationData.advancePaid > 0 ? new Date().toISOString() : null
     };
     
     reservations.push(newReservation);

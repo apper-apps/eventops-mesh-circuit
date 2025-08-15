@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import vipReservationsService from "@/services/api/vipReservationsService";
+import eventService from "@/services/api/eventService";
 import ApperIcon from "@/components/ApperIcon";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
@@ -13,7 +14,6 @@ import Button from "@/components/atoms/Button";
 import Badge from "@/components/atoms/Badge";
 import Card from "@/components/atoms/Card";
 import Input from "@/components/atoms/Input";
-
 const VipReservations = () => {
   const [reservations, setReservations] = useState([]);
   const [filteredReservations, setFilteredReservations] = useState([]);
@@ -23,9 +23,19 @@ const VipReservations = () => {
   const [statusFilter, setStatusFilter] = useState('');
   const [tableTypeFilter, setTableTypeFilter] = useState('');
   const [responsibleFilter, setResponsibleFilter] = useState('');
-  const [sortField, setSortField] = useState('creationDate');
+const [sortField, setSortField] = useState('creationDate');
   const [sortDirection, setSortDirection] = useState('desc');
-
+  
+  // Quick Add Modal State
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [events, setEvents] = useState([]);
+  const [quickFormData, setQuickFormData] = useState({
+    tableNumber: '',
+    phone: '',
+    advancePaid: '',
+    event: ''
+  });
+  const [quickFormLoading, setQuickFormLoading] = useState(false);
   const statusOptions = [
     { value: '', label: 'Todos los estados' },
     { value: 'Advance Delivered', label: 'Advance Delivered' },
@@ -84,7 +94,18 @@ const VipReservations = () => {
   useEffect(() => {
     fetchReservations();
   }, []);
-
+// Load events for quick add form
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const eventsData = await eventService.getAll();
+        setEvents(eventsData);
+      } catch (error) {
+        console.error('Error loading events:', error);
+      }
+    };
+    loadEvents();
+  }, []);
   useEffect(() => {
     let filtered = [...reservations];
 
@@ -176,6 +197,105 @@ const VipReservations = () => {
 
   const handleView = (reservation) => {
     toast.info(`Ver detalles de ${reservation.clientName} - Funcionalidad en desarrollo`);
+};
+
+  // Quick Add Form Functions
+  const handleQuickFormChange = (e) => {
+    const { name, value } = e.target;
+    setQuickFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const validateQuickForm = () => {
+    const errors = [];
+    
+    if (!quickFormData.tableNumber.trim()) {
+      errors.push('Número de mesa es requerido');
+    }
+    
+    if (!quickFormData.phone.trim()) {
+      errors.push('Teléfono es requerido');
+    } else if (!/^[\+]?[\d\s\-\(\)]{9,}$/.test(quickFormData.phone.trim())) {
+      errors.push('Formato de teléfono inválido');
+    }
+    
+    if (!quickFormData.event) {
+      errors.push('Evento es requerido');
+    }
+    
+    const paidAmount = parseFloat(quickFormData.advancePaid) || 0;
+    if (paidAmount < 0) {
+      errors.push('El monto pagado no puede ser negativo');
+    }
+    
+    return errors;
+  };
+
+  const handleQuickSubmit = async (e) => {
+    e.preventDefault();
+    
+    const validationErrors = validateQuickForm();
+    if (validationErrors.length > 0) {
+      validationErrors.forEach(error => toast.error(error));
+      return;
+    }
+
+    setQuickFormLoading(true);
+    
+    try {
+      const selectedEvent = events.find(event => event.name === quickFormData.event);
+      const paidAmount = parseFloat(quickFormData.advancePaid) || 0;
+      const defaultPrice = 2500; // Default total price
+      
+      const reservationData = {
+        tableNumber: quickFormData.tableNumber.trim(),
+        event: quickFormData.event,
+        clientName: "Cliente Rápido", // Default name
+        phone: quickFormData.phone.trim(),
+        email: "", // Default empty email
+        tableType: "Sonafán", // Default table type
+        totalPrice: defaultPrice,
+        advancePaid: paidAmount,
+        pendingBalance: defaultPrice - paidAmount,
+        paymentMethod: "Por definir", // Default payment method
+        responsiblePerson: "Sistema", // Default responsible person
+        status: paidAmount > 0 ? "Advance Delivered" : "Pending",
+        origin: "Quick Add",
+        notes: "Reserva creada mediante Quick Add"
+      };
+
+      await vipReservationsService.create(reservationData);
+      
+      toast.success('Reserva rápida creada exitosamente');
+      setShowQuickAdd(false);
+      setQuickFormData({
+        tableNumber: '',
+        phone: '',
+        advancePaid: '',
+        event: ''
+      });
+      
+      // Reload reservations
+      await fetchReservations();
+      
+    } catch (error) {
+      console.error('Error creating quick reservation:', error);
+      toast.error('Error al crear la reserva rápida');
+    } finally {
+      setQuickFormLoading(false);
+    }
+  };
+
+  const closeQuickAdd = () => {
+    setShowQuickAdd(false);
+    setQuickFormData({
+      tableNumber: '',
+      phone: '',
+      advancePaid: '',
+      event: ''
+    });
   };
 
   const formatCurrency = (amount) => {
@@ -270,10 +390,14 @@ const VipReservations = () => {
       {/* Filters and Search */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+<div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-white">Filtros y Búsqueda</h2>
-            <Button icon="Plus" onClick={() => toast.info('Nueva reserva - Funcionalidad en desarrollo')}>
-              Nueva Reserva
+            <Button 
+              icon="Plus" 
+              onClick={() => setShowQuickAdd(true)}
+              className="bg-gradient-to-r from-primary to-accent hover:shadow-lg hover:shadow-primary/30 transition-all duration-200"
+            >
+              Quick Add Reserva
             </Button>
           </div>
 
@@ -454,6 +578,156 @@ const VipReservations = () => {
               ))}
           </div>
         </Card>
+)}
+
+      {/* Quick Add Reservation Modal */}
+      {showQuickAdd && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={(e) => e.target === e.currentTarget && closeQuickAdd()}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="bg-surface rounded-2xl border border-slate-600/30 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 pb-4 border-b border-slate-600/20">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <ApperIcon name="Plus" size={24} className="text-primary" />
+                Quick Add Reserva
+              </h3>
+              <button
+                onClick={closeQuickAdd}
+                className="text-slate-400 hover:text-white transition-colors p-1 hover:bg-slate-700 rounded-lg"
+              >
+                <ApperIcon name="X" size={20} />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleQuickSubmit} className="p-6 space-y-6">
+              {/* Table Number */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">
+                  Número de Mesa *
+                </label>
+                <Input
+                  name="tableNumber"
+                  value={quickFormData.tableNumber}
+                  onChange={handleQuickFormChange}
+                  placeholder="Ej: VIP-001"
+                  className="h-12 text-base"
+                  required
+                />
+              </div>
+
+              {/* Client Phone */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">
+                  Teléfono Cliente *
+                </label>
+                <Input
+                  name="phone"
+                  type="tel"
+                  value={quickFormData.phone}
+                  onChange={handleQuickFormChange}
+                  placeholder="+34 666 123 456"
+                  className="h-12 text-base"
+                  required
+                />
+              </div>
+
+              {/* Event Selector */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">
+                  Evento *
+                </label>
+                <Select
+                  name="event"
+                  value={quickFormData.event}
+                  onChange={handleQuickFormChange}
+                  className="h-12 text-base"
+                  required
+                >
+                  <option value="">Seleccionar evento...</option>
+                  {events.map((event) => (
+                    <option key={event.Id} value={event.name}>
+                      {event.name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+
+              {/* Amount Paid */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">
+                  Monto Pagado (€)
+                </label>
+                <Input
+                  name="advancePaid"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={quickFormData.advancePaid}
+                  onChange={handleQuickFormChange}
+                  placeholder="0.00"
+                  className="h-12 text-base"
+                />
+                <p className="text-xs text-slate-400">
+                  Dejar vacío si no hay pago inicial
+                </p>
+              </div>
+
+              {/* Default Values Info */}
+              <div className="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                  <ApperIcon name="Info" size={16} />
+                  Valores por Defecto
+                </h4>
+                <div className="text-xs text-slate-400 space-y-1">
+                  <p>• Tipo de Mesa: Sonafán</p>
+                  <p>• Precio Total: €2,500</p>
+                  <p>• Cliente: "Cliente Rápido"</p>
+                  <p>• Responsable: Sistema</p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={closeQuickAdd}
+                  className="flex-1 h-12 text-base"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={quickFormLoading}
+                  className="flex-1 h-12 text-base bg-gradient-to-r from-primary to-accent hover:shadow-lg hover:shadow-primary/30"
+                >
+                  {quickFormLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Guardando...
+                    </div>
+                  ) : (
+                    <>
+                      <ApperIcon name="Save" size={16} />
+                      Guardar Reserva
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </motion.div>
       )}
     </motion.div>
   );

@@ -8,7 +8,7 @@ class EventService {
     this.events = [...eventsData];
   }
 
-  async getAll() {
+async getAll() {
     await delay(300);
     return [...this.events];
   }
