@@ -1,0 +1,134 @@
+[
+  {
+    "Id": 1,
+    "eventName": "Festival de Música 2024",
+    "totalEstimated": 150000,
+    "totalActual": 89500,
+    "status": "En progreso",
+    "categories": [
+      {
+        "Id": 1,
+        "name": "Venue & Setup",
+        "estimated": 60000,
+        "actual": 45000,
+        "icon": "MapPin"
+      },
+      {
+        "Id": 2,
+        "name": "Artists & Entertainment",
+        "estimated": 50000,
+        "actual": 30000,
+        "icon": "Music"
+      },
+      {
+        "Id": 3,
+        "name": "Marketing & Promotion",
+        "estimated": 20000,
+        "actual": 14500,
+        "icon": "Megaphone"
+      },
+      {
+        "Id": 4,
+        "name": "Catering & Beverages",
+        "estimated": 15000,
+        "actual": 0,
+        "icon": "UtensilsCrossed"
+      },
+      {
+        "Id": 5,
+        "name": "Security & Staff",
+        "estimated": 5000,
+        "actual": 0,
+        "icon": "Shield"
+      }
+    ]
+  },
+  {
+    "Id": 2,
+    "eventName": "Conferencia Tech Summit",
+    "totalEstimated": 85000,
+    "totalActual": 72000,
+    "status": "Casi completo",
+    "categories": [
+      {
+        "Id": 6,
+        "name": "Venue & Setup",
+        "estimated": 25000,
+        "actual": 25000,
+        "icon": "MapPin"
+      },
+      {
+        "Id": 7,
+        "name": "Speakers & Content",
+        "estimated": 30000,
+        "actual": 28000,
+        "icon": "Presentation"
+      },
+      {
+        "Id": 8,
+        "name": "Technology & Equipment",
+        "estimated": 20000,
+        "actual": 19000,
+        "icon": "Monitor"
+      },
+      {
+        "Id": 9,
+        "name": "Catering & Beverages",
+        "estimated": 8000,
+        "actual": 0,
+        "icon": "UtensilsCrossed"
+      },
+      {
+        "Id": 10,
+        "name": "Marketing & Materials",
+        "estimated": 2000,
+        "actual": 0,
+        "icon": "Megaphone"
+      }
+    ]
+  },
+  {
+    "Id": 3,
+    "eventName": "Gala de Caridad",
+    "totalEstimated": 200000,
+    "totalActual": 45000,
+    "status": "Iniciado",
+    "categories": [
+      {
+        "Id": 11,
+        "name": "Venue & Decoration",
+        "estimated": 80000,
+        "actual": 25000,
+        "icon": "MapPin"
+      },
+      {
+        "Id": 12,
+        "name": "Entertainment & Show",
+        "estimated": 60000,
+        "actual": 20000,
+        "icon": "Music"
+      },
+      {
+        "Id": 13,
+        "name": "Catering & Bar",
+        "estimated": 40000,
+        "actual": 0,
+        "icon": "UtensilsCrossed"
+      },
+      {
+        "Id": 14,
+        "name": "Marketing & Invitations",
+        "estimated": 15000,
+        "actual": 0,
+        "icon": "Megaphone"
+      },
+      {
+        "Id": 15,
+        "name": "Security & Logistics",
+        "estimated": 5000,
+        "actual": 0,
+        "icon": "Shield"
+      }
+    ]
+  }
+]
