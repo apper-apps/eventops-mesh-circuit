@@ -22,8 +22,8 @@ const Budgets = () => {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 800));
       
-      const budgetsData = budgetService.getAll();
-      const summary = budgetService.getBudgetSummary();
+const budgetsData = await budgetService.getAll();
+      const summary = await budgetService.getBudgetSummary();
       
       setBudgets(budgetsData);
       setBudgetSummary(summary);
