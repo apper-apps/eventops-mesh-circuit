@@ -1,5 +1,3 @@
-import React from "react";
-import Error from "@/components/ui/Error";
 import mockUsers from "@/services/mockData/users.json";
 
 function delay(ms) {
@@ -18,26 +16,6 @@ class UserService {
     let user = this.users.find(u => u.email === email);
     
     if (!user) {
-}
-
-// Create UserService instance for named export
-const userServiceInstance = new UserService();
-
-// Named export for the service instance (used by AuthContext)
-export const userService = userServiceInstance;
-
-// Backward compatibility - keep existing function exports
-const legacyService = {
-  authenticate: (email, role, assignedEventIds) => userServiceInstance.authenticate(email, role, assignedEventIds),
-  getAll: () => userServiceInstance.getAll(),
-  getById: (id) => userServiceInstance.getById(id),
-  create: (userData) => userServiceInstance.create(userData),
-  update: (id, userData) => userServiceInstance.update(id, userData),
-  delete: (id) => userServiceInstance.delete(id)
-};
-
-// Default export maintains backward compatibility
-export default legacyService;
       user = {
         Id: this.users.length + 1,
         email,
@@ -116,5 +94,24 @@ export default legacyService;
     return true;
   }
 }
+
+// Create UserService instance for named export
+const userServiceInstance = new UserService();
+
+// Named export for the service instance (used by AuthContext)
+export const userService = userServiceInstance;
+
+// Backward compatibility - keep existing function exports
+const legacyService = {
+  authenticate: (email, role, assignedEventIds) => userServiceInstance.authenticate(email, role, assignedEventIds),
+  getAll: () => userServiceInstance.getAll(),
+  getById: (id) => userServiceInstance.getById(id),
+  create: (userData) => userServiceInstance.create(userData),
+  update: (id, userData) => userServiceInstance.update(id, userData),
+  delete: (id) => userServiceInstance.delete(id)
+};
+
+// Default export maintains backward compatibility
+export default legacyService;
 
 export { UserService };
