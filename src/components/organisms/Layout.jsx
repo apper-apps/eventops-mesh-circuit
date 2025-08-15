@@ -6,15 +6,15 @@ import Sidebar from "@/components/organisms/Sidebar";
 const Layout = () => {
 const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  return (
+return (
     <FilterProvider>
       <div className="min-h-screen bg-background">
         {/* Sidebar */}
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         {/* Main Content */}
-        <div className="lg:pl-64">
-<div className="sticky top-0 z-40 lg:mx-auto lg:max-w-none lg:px-8">
+        <div className="lg:ml-64 min-h-screen flex flex-col">
+          <div className="z-40">
             {/* Header */}
             <Header 
               title="EventOps Pro"
@@ -22,7 +22,7 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
             />
           </div>
           
-          <main className="p-4 lg:p-8">
+          <main className="flex-1 p-4 lg:p-8">
             <Outlet />
           </main>
         </div>

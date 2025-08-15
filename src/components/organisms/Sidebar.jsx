@@ -12,9 +12,9 @@ const Sidebar = ({ isOpen, onClose }) => {
     { to: "/bar-inventory", icon: "Package", label: "Bar e Inventario" }
   ];
 
-  // Desktop sidebar
+// Desktop sidebar
   const DesktopSidebar = () => (
-    <div className="hidden lg:flex lg:flex-col w-64 bg-surface border-r border-slate-600/20 min-h-screen">
+    <div className="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:left-0 w-64 bg-surface border-r border-slate-600/20 min-h-screen z-30">
       <div className="p-6 border-b border-slate-600/20">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
