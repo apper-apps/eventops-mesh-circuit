@@ -279,8 +279,9 @@ const categories = ["Cerveza", "Licores", "Refrescos", "Sin alcohol"];
             <Button variant="secondary" icon="Download">
               Exportar
             </Button>
-            <Button icon="Plus">
-              Añadir Producto
+<Button icon="Plus" className="h-10 touch-manipulation active:scale-95">
+              <span className="hidden sm:inline">Añadir Producto</span>
+              <span className="sm:hidden">Añadir</span>
             </Button>
           </div>
         </div>
@@ -295,30 +296,31 @@ const categories = ["Cerveza", "Licores", "Refrescos", "Sin alcohol"];
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="p-6 hover-glow cursor-pointer">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
+<Card className="p-4 sm:p-6 hover-glow cursor-pointer">
+              <div className="flex flex-col space-y-4">
+                {/* Mobile Header */}
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center shrink-0">
                     <ApperIcon 
-name={
+                      name={
                         item.category === "Cerveza" ? "Beer" :
                         item.category === "Licores" ? "Wine" :
                         item.category === "Refrescos" ? "Coffee" :
                         item.category === "Sin alcohol" ? "Droplets" :
                         "Sparkles"
                       } 
-                      size={24} 
-                      className="text-primary" 
+                      size={20} 
+                      className="text-primary sm:!w-6 sm:!h-6" 
                     />
                   </div>
-                  <div>
-<h3 className="text-lg font-semibold text-white">{item.name}</h3>
-                    <p className="text-slate-400">{item.category} • {item.supplier}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant={getStatusVariant(item.status)}>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-base sm:text-lg font-semibold text-white truncate">{item.name}</h3>
+                    <p className="text-sm text-slate-400 truncate">{item.category} • {item.supplier}</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
+                      <Badge variant={getStatusVariant(item.status)} size="sm">
                         {item.status}
                       </Badge>
-                      <div className="flex items-center gap-3 text-sm">
+                      <div className="flex items-center gap-3 text-xs sm:text-sm">
                         <span className="text-slate-400">Costo: ${item.costPrice}</span>
                         <span className="text-green-400 font-medium">Venta: ${item.salePrice}</span>
                       </div>
@@ -326,51 +328,76 @@ name={
                   </div>
                 </div>
 
-                <div className="flex items-center gap-8">
+                {/* Stock Information */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="text-center">
-                    <p className="text-slate-400 text-sm">Stock Actual</p>
-                    <p className="text-2xl font-bold text-white">{item.currentStock}</p>
+                    <p className="text-slate-400 text-xs sm:text-sm">Stock Actual</p>
+                    <p className="text-lg sm:text-2xl font-bold text-white">{item.currentStock}</p>
                     <p className="text-slate-400 text-xs">{item.unit}</p>
                   </div>
 
                   <div className="text-center">
-                    <p className="text-slate-400 text-sm">Stock Inicial</p>
-                    <p className="text-xl font-semibold text-blue-400">{item.initialStock}</p>
+                    <p className="text-slate-400 text-xs sm:text-sm">Stock Inicial</p>
+                    <p className="text-base sm:text-xl font-semibold text-blue-400">{item.initialStock}</p>
                     <p className="text-slate-400 text-xs">{item.unit}</p>
                   </div>
 
                   <div className="text-center">
-                    <p className="text-slate-400 text-sm">Stock Final</p>
-                    <p className="text-xl font-semibold text-purple-400">{item.finalStock}</p>
+                    <p className="text-slate-400 text-xs sm:text-sm">Stock Final</p>
+                    <p className="text-base sm:text-xl font-semibold text-purple-400">{item.finalStock}</p>
                     <p className="text-slate-400 text-xs">{item.unit}</p>
                   </div>
 
-                  <div className="w-32">
-                    <div className="flex items-center justify-between text-sm text-slate-400 mb-1">
-                      <span>Nivel</span>
-                      <span>{Math.round(getStockPercentage(item))}%</span>
-                    </div>
-                    <div className="w-full bg-slate-700 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full transition-all duration-500 ${
-                          item.status === "Disponible" ? "bg-gradient-to-r from-success to-success/80" :
-                          item.status === "Bajo stock" ? "bg-gradient-to-r from-warning to-warning/80" :
-                          "bg-gradient-to-r from-error to-error/80"
-                        }`}
-                        style={{ width: `${Math.min(getStockPercentage(item), 100)}%` }}
-                      ></div>
-                    </div>
-                    <div className="flex justify-between text-xs text-slate-500 mt-1">
-                      <span>Min: {item.minStock}</span>
-                      <span>Max: {item.maxStock}</span>
+                  <div className="text-center">
+                    <p className="text-slate-400 text-xs sm:text-sm mb-2">Nivel</p>
+                    <div className="w-full max-w-24 mx-auto">
+                      <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+                        <span>{Math.round(getStockPercentage(item))}%</span>
+                      </div>
+                      <div className="w-full bg-slate-700 rounded-full h-2">
+                        <div 
+                          className={`h-2 rounded-full transition-all duration-500 ${
+                            item.status === "Disponible" ? "bg-gradient-to-r from-success to-success/80" :
+                            item.status === "Bajo stock" ? "bg-gradient-to-r from-warning to-warning/80" :
+                            "bg-gradient-to-r from-error to-error/80"
+                          }`}
+                          style={{ width: `${Math.min(getStockPercentage(item), 100)}%` }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between text-xs text-slate-500 mt-1">
+                        <span>Min: {item.minStock}</span>
+                        <span>Max: {item.maxStock}</span>
+                      </div>
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" icon="Plus" />
-                    <Button variant="ghost" size="sm" icon="Minus" />
-                    <Button variant="ghost" size="sm" icon="Edit" />
-                  </div>
+                {/* Action Buttons */}
+                <div className="flex justify-center gap-2 pt-2 border-t border-slate-600/30">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-9 px-3 touch-manipulation active:scale-95"
+                  >
+                    <ApperIcon name="Plus" size={16} />
+                    <span className="ml-1 hidden sm:inline">Añadir</span>
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-9 px-3 touch-manipulation active:scale-95"
+                  >
+                    <ApperIcon name="Minus" size={16} />
+                    <span className="ml-1 hidden sm:inline">Reducir</span>
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-9 px-3 touch-manipulation active:scale-95"
+                  >
+                    <ApperIcon name="Edit" size={16} />
+                    <span className="ml-1 hidden sm:inline">Editar</span>
+                  </Button>
                 </div>
               </div>
             </Card>

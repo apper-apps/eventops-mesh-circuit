@@ -25,25 +25,26 @@ const EventFilters = ({ filters, onFiltersChange, onCreateEvent }) => {
       animate={{ opacity: 1, y: 0 }}
     >
       <Card className="p-6 mb-6">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="relative">
+<div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="relative col-span-1 sm:col-span-2 lg:col-span-1">
               <ApperIcon 
                 name="Search" 
                 size={18} 
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" 
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none z-10" 
               />
               <Input
                 placeholder="Buscar eventos..."
                 value={filters.search}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
-                className="pl-10"
+                className="pl-10 h-11 sm:h-12"
               />
             </div>
 
             <Select
               value={filters.status}
               onChange={(e) => handleFilterChange("status", e.target.value)}
+              className="h-11 sm:h-12"
             >
               <option value="all">Todos los estados</option>
               <option value="Planificado">Planificado</option>
@@ -55,6 +56,7 @@ const EventFilters = ({ filters, onFiltersChange, onCreateEvent }) => {
             <Select
               value={filters.type}
               onChange={(e) => handleFilterChange("type", e.target.value)}
+              className="h-11 sm:h-12"
             >
               <option value="all">Todos los tipos</option>
               <option value="Concierto">Concierto</option>

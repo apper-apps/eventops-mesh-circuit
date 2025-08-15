@@ -22,8 +22,10 @@ return (
             />
           </div>
           
-          <main className="flex-1 p-4 lg:p-8">
-            <Outlet />
+<main className="flex-1 p-3 sm:p-4 lg:p-6 xl:p-8 min-h-0">
+            <div className="max-w-full overflow-hidden">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>

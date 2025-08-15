@@ -94,72 +94,72 @@ const Budgets = () => {
 
       {/* Summary Cards */}
 {/* Budget Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <Card className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-slate-400 text-sm">Total Estimado</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl sm:text-2xl font-bold text-white">
                 {formatCurrency(budgetSummary?.totalEstimated || 0)}
               </p>
             </div>
-            <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-              <ApperIcon name="Target" size={24} className="text-primary" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-lg flex items-center justify-center shrink-0">
+              <ApperIcon name="Target" size={20} className="text-primary sm:!w-6 sm:!h-6" />
             </div>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-slate-400 text-sm">Total Gastado</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl sm:text-2xl font-bold text-white">
                 {formatCurrency(budgetSummary?.totalActual || 0)}
               </p>
               <p className="text-xs text-slate-500 mt-1">
                 {budgetSummary?.averageProgress?.toFixed(1)}% del presupuesto
               </p>
             </div>
-            <div className="w-12 h-12 bg-error/20 rounded-lg flex items-center justify-center">
-              <ApperIcon name="TrendingDown" size={24} className="text-error" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-error/20 rounded-lg flex items-center justify-center shrink-0">
+              <ApperIcon name="TrendingDown" size={20} className="text-error sm:!w-6 sm:!h-6" />
             </div>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-slate-400 text-sm">Disponible</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl sm:text-2xl font-bold text-white">
                 {formatCurrency(budgetSummary?.totalRemaining || 0)}
               </p>
             </div>
-            <div className="w-12 h-12 bg-success/20 rounded-lg flex items-center justify-center">
-              <ApperIcon name="TrendingUp" size={24} className="text-success" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-success/20 rounded-lg flex items-center justify-center shrink-0">
+              <ApperIcon name="TrendingUp" size={20} className="text-success sm:!w-6 sm:!h-6" />
             </div>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-slate-400 text-sm">Eventos Activos</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl sm:text-2xl font-bold text-white">
                 {budgetSummary?.totalEvents || 0}
               </p>
               <p className="text-xs text-slate-500 mt-1">
                 {budgetSummary?.onTrackEvents || 0} en progreso
               </p>
             </div>
-            <div className="w-12 h-12 bg-info/20 rounded-lg flex items-center justify-center">
-              <ApperIcon name="Calendar" size={24} className="text-info" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-info/20 rounded-lg flex items-center justify-center shrink-0">
+              <ApperIcon name="Calendar" size={20} className="text-info sm:!w-6 sm:!h-6" />
             </div>
           </div>
         </Card>
       </div>
 
-      {/* Budget Events List */}
-      <div className="space-y-6">
+{/* Budget Events List */}
+      <div className="space-y-4 sm:space-y-6">
         {budgets.map((budget) => {
           const progress = calculateProgress(budget.totalActual, budget.totalEstimated);
           const variance = ((budget.totalActual - budget.totalEstimated) / budget.totalEstimated) * 100;
@@ -171,19 +171,19 @@ const Budgets = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <Card className="p-6">
-                <div className="flex flex-col space-y-6">
+              <Card className="p-4 sm:p-6">
+                <div className="flex flex-col space-y-4 sm:space-y-6">
                   {/* Budget Header */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-white mb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-2 truncate">
                         {budget.eventName}
                       </h3>
-                      <div className="flex items-center space-x-4 text-sm">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
                         <Badge variant={getStatusColor(budget.status)}>
                           {budget.status}
                         </Badge>
-                        <span className="text-slate-400">
+                        <span className="text-slate-400 break-all sm:break-normal">
                           {formatCurrency(budget.totalActual)} / {formatCurrency(budget.totalEstimated)}
                         </span>
                         <span className={`font-medium ${
@@ -194,19 +194,21 @@ const Budgets = () => {
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center justify-end">
                       <Button
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         onClick={() => setSelectedBudget(
                           selectedBudget?.Id === budget.Id ? null : budget
                         )}
+                        className="h-10 px-4 touch-manipulation active:scale-95"
                       >
                         <ApperIcon 
                           name={selectedBudget?.Id === budget.Id ? "ChevronUp" : "ChevronDown"} 
                           size={16} 
                         />
-                        Details
+                        <span className="ml-2 hidden sm:inline">Detalles</span>
+                        <span className="ml-2 sm:hidden">Ver</span>
                       </Button>
                     </div>
                   </div>
@@ -214,7 +216,7 @@ const Budgets = () => {
                   {/* Progress Bar */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Progress</span>
+                      <span className="text-slate-400">Progreso</span>
                       <span className="text-white font-medium">{progress.toFixed(1)}%</span>
                     </div>
                     <div className="w-full bg-slate-700 rounded-full h-3">
@@ -236,12 +238,12 @@ const Budgets = () => {
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="border-t border-slate-600/30 pt-6"
+                      className="border-t border-slate-600/30 pt-4 sm:pt-6"
                     >
                       <h4 className="text-lg font-semibold text-white mb-4">
-                        Category Breakdown
+                        Desglose por Categoría
                       </h4>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
                         {budget.categories.map((category) => {
                           const catProgress = calculateProgress(category.actual, category.estimated);
                           const catVariance = category.estimated > 0 ? 
@@ -250,25 +252,25 @@ const Budgets = () => {
                           return (
                             <div 
                               key={category.Id}
-                              className="bg-slate-800/50 rounded-lg p-4 space-y-3"
+                              className="bg-slate-800/50 rounded-lg p-3 sm:p-4 space-y-3"
                             >
                               <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-3">
-                                  <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                                <div className="flex items-center space-x-3 min-w-0 flex-1">
+                                  <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center shrink-0">
                                     <ApperIcon 
                                       name={category.icon} 
                                       size={16} 
                                       className="text-primary" 
                                     />
                                   </div>
-                                  <div>
-                                    <p className="font-medium text-white">{category.name}</p>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="font-medium text-white text-sm sm:text-base truncate">{category.name}</p>
                                     <p className="text-xs text-slate-400">
                                       {formatCurrency(category.actual)} / {formatCurrency(category.estimated)}
                                     </p>
                                   </div>
                                 </div>
-                                <span className={`text-xs font-medium ${
+                                <span className={`text-xs font-medium shrink-0 ml-2 ${
                                   catVariance > 0 ? 'text-error' : 'text-success'
                                 }`}>
                                   {catVariance > 0 ? '+' : ''}{catVariance.toFixed(1)}%
@@ -319,81 +321,7 @@ const Budgets = () => {
         </Card>
       )}
 
-      {/* Budget List */}
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-white">Presupuestos por Evento</h2>
-          <Button icon="Plus">Nuevo Presupuesto</Button>
-        </div>
-
-        <div className="space-y-4">
-          {budgets.map((budget, index) => (
-            <motion.div
-              key={budget.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Card className="p-6 hover-glow cursor-pointer">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-white">{budget.eventName}</h3>
-                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                    getStatusColor(budget.status) === "info" ? "bg-info/20 text-info border border-info/30" :
-                    getStatusColor(budget.status) === "warning" ? "bg-warning/20 text-warning border border-warning/30" :
-                    "bg-success/20 text-success border border-success/30"
-                  }`}>
-                    {budget.status}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                  <div>
-                    <p className="text-slate-400 text-sm">Presupuesto Total</p>
-                    <p className="text-xl font-bold text-white">
-                      ${budget.totalBudget.toLocaleString()}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-sm">Gastado</p>
-                    <p className="text-xl font-bold text-error">
-                      ${budget.spent.toLocaleString()}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-sm">Disponible</p>
-                    <p className="text-xl font-bold text-success">
-                      ${budget.remaining.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Progress Bar */}
-                <div className="mb-4">
-                  <div className="flex items-center justify-between text-sm text-slate-400 mb-2">
-                    <span>Progreso del gasto</span>
-                    <span>{Math.round((budget.spent / budget.totalBudget) * 100)}%</span>
-                  </div>
-                  <div className="w-full bg-slate-700 rounded-full h-2">
-                    <div 
-                      className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(budget.spent / budget.totalBudget) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-end gap-2">
-                  <Button variant="ghost" size="sm" icon="Eye">
-                    Ver detalles
-                  </Button>
-                  <Button variant="ghost" size="sm" icon="Edit">
-                    Editar
-                  </Button>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </div>
+)}
     </motion.div>
   );
 };

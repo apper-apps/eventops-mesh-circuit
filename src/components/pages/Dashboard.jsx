@@ -85,21 +85,21 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="space-y-6">
-          <Card className="p-6">
-            <h3 className="text-xl font-semibold text-white mb-4">Acciones Rápidas</h3>
-            <div className="space-y-3">
-              <button className="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20 hover:from-primary/20 hover:to-accent/20 transition-all duration-200">
-                <ApperIcon name="Plus" size={18} className="text-primary" />
-                <span className="text-slate-200">Crear Evento</span>
+<div className="space-y-6">
+          <Card className="p-4 sm:p-6">
+            <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Acciones Rápidas</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button className="w-full flex items-center justify-center sm:justify-start gap-3 p-4 h-12 sm:h-auto bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl border border-primary/20 hover:from-primary/20 hover:to-accent/20 transition-all duration-200 touch-manipulation active:scale-95">
+                <ApperIcon name="Plus" size={20} className="text-primary" />
+                <span className="text-slate-200 font-medium">Crear Evento</span>
               </button>
-              <button className="w-full flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors">
-                <ApperIcon name="Calculator" size={18} className="text-info" />
-                <span className="text-slate-200">Nuevo Presupuesto</span>
+              <button className="w-full flex items-center justify-center sm:justify-start gap-3 p-4 h-12 sm:h-auto bg-slate-700/30 rounded-xl hover:bg-slate-700/50 transition-all duration-200 touch-manipulation active:scale-95">
+                <ApperIcon name="Calculator" size={20} className="text-info" />
+                <span className="text-slate-200 font-medium">Nuevo Presupuesto</span>
               </button>
-              <button className="w-full flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors">
-                <ApperIcon name="Crown" size={18} className="text-warning" />
-                <span className="text-slate-200">Reserva VIP</span>
+              <button className="w-full flex items-center justify-center sm:justify-start gap-3 p-4 h-12 sm:h-auto bg-slate-700/30 rounded-xl hover:bg-slate-700/50 transition-all duration-200 touch-manipulation active:scale-95">
+                <ApperIcon name="Crown" size={20} className="text-warning" />
+                <span className="text-slate-200 font-medium">Reserva VIP</span>
               </button>
             </div>
           </Card>

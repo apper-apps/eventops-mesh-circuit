@@ -14,6 +14,7 @@ import Button from "@/components/atoms/Button";
 import Badge from "@/components/atoms/Badge";
 import Card from "@/components/atoms/Card";
 import Input from "@/components/atoms/Input";
+
 const VipReservations = () => {
   const [reservations, setReservations] = useState([]);
   const [filteredReservations, setFilteredReservations] = useState([]);
@@ -326,14 +327,14 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
   if (error) return <Error message={error} onRetry={fetchReservations} />;
 
   return (
-    <motion.div
+<motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8"
+      className="space-y-4 sm:space-y-6 lg:space-y-8 max-w-full"
     >
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Reservas VIP</h1>
-        <p className="text-slate-400">Gestiona las reservas especiales y experiencias premium</p>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Reservas VIP</h1>
+        <p className="text-slate-400 text-sm sm:text-base">Gestiona las reservas especiales y experiencias premium</p>
       </div>
 
       {/* Summary Stats */}
@@ -389,15 +390,16 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
 
       {/* Filters and Search */}
       <Card className="p-6">
-        <div className="space-y-4">
-<div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-white">Filtros y Búsqueda</h2>
+<div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">Filtros y Búsqueda</h2>
             <Button 
               icon="Plus" 
               onClick={() => setShowQuickAdd(true)}
-              className="bg-gradient-to-r from-primary to-accent hover:shadow-lg hover:shadow-primary/30 transition-all duration-200"
+              className="bg-gradient-to-r from-primary to-accent hover:shadow-lg hover:shadow-primary/30 transition-all duration-200 h-11 sm:h-10 touch-manipulation active:scale-95"
             >
-              Quick Add Reserva
+              <span className="sm:hidden">Añadir</span>
+              <span className="hidden sm:inline">Quick Add Reserva</span>
             </Button>
           </div>
 
@@ -431,186 +433,263 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
       </Card>
 
       {/* Reservations Table */}
-      <Card className="overflow-hidden">
+<Card className="overflow-hidden">
         {filteredReservations.length === 0 ? (
           <Empty
             message="No se encontraron reservas VIP"
             description="Intenta ajustar los filtros de búsqueda"
           />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-600/20 bg-slate-700/30">
-                  {[
-                    { key: 'tableNumber', label: 'Mesa' },
-                    { key: 'event', label: 'Evento' },
-                    { key: 'clientName', label: 'Cliente' },
-                    { key: 'phone', label: 'Teléfono' },
-                    { key: 'email', label: 'Email' },
-                    { key: 'tableType', label: 'Tipo Mesa' },
-                    { key: 'totalPrice', label: 'Precio Total' },
-                    { key: 'advancePaid', label: 'Anticipo' },
-                    { key: 'pendingBalance', label: 'Pendiente' },
-                    { key: 'paymentMethod', label: 'Pago' },
-                    { key: 'responsiblePerson', label: 'Responsable' },
-                    { key: 'status', label: 'Estado' },
-                    { key: 'origin', label: 'Origen' },
-                    { key: 'creationDate', label: 'Creado' },
-                    { key: 'lastPaymentDate', label: 'Último Pago' }
-                  ].map(({ key, label }) => (
-                    <th
-                      key={key}
-                      className="text-left py-3 px-4 text-slate-300 font-medium cursor-pointer hover:text-white transition-colors"
-                      onClick={() => handleSort(key)}
+          <>
+            {/* Mobile Card Layout */}
+            <div className="block sm:hidden space-y-4 p-4">
+              {filteredReservations.map((reservation, index) => (
+                <motion.div
+                  key={reservation.Id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="bg-slate-700/30 rounded-lg p-4 space-y-3"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h4 className="font-semibold text-white">Mesa {reservation.tableNumber}</h4>
+                      <p className="text-sm text-slate-400">{reservation.clientName}</p>
+                    </div>
+                    <Badge variant={getStatusVariant(reservation.status)} className="text-xs">
+                      {reservation.status}
+                    </Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-slate-400">Evento</p>
+                      <p className="text-slate-200 truncate">{reservation.event}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400">Teléfono</p>
+                      <p className="text-slate-200">{reservation.phone}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400">Total</p>
+                      <p className="text-slate-200 font-medium">{formatCurrency(reservation.totalPrice)}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400">Anticipo</p>
+                      <p className="text-success font-medium">{formatCurrency(reservation.advancePaid)}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end gap-2 pt-2 border-t border-slate-600/30">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleView(reservation)}
+                      className="h-9 px-3 touch-manipulation"
                     >
-                      <div className="flex items-center gap-2">
-                        {label}
-                        {sortField === key && (
-                          <ApperIcon
-                            name={sortDirection === 'asc' ? 'ArrowUp' : 'ArrowDown'}
-                            size={16}
-                            className="text-primary"
-                          />
-                        )}
-                      </div>
-                    </th>
+                      <ApperIcon name="Eye" size={16} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEdit(reservation)}
+                      className="h-9 px-3 touch-manipulation"
+                    >
+                      <ApperIcon name="Edit" size={16} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(reservation.Id)}
+                      className="h-9 px-3 text-error hover:text-error/80 touch-manipulation"
+                    >
+                      <ApperIcon name="Trash2" size={16} />
+                    </Button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Desktop Table Layout */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full min-w-[1200px]">
+                <thead>
+                  <tr className="border-b border-slate-600/20 bg-slate-700/30">
+                    {[
+                      { key: 'tableNumber', label: 'Mesa' },
+                      { key: 'event', label: 'Evento' },
+                      { key: 'clientName', label: 'Cliente' },
+                      { key: 'phone', label: 'Teléfono' },
+                      { key: 'email', label: 'Email' },
+                      { key: 'tableType', label: 'Tipo Mesa' },
+                      { key: 'totalPrice', label: 'Precio Total' },
+                      { key: 'advancePaid', label: 'Anticipo' },
+                      { key: 'pendingBalance', label: 'Pendiente' },
+                      { key: 'paymentMethod', label: 'Pago' },
+                      { key: 'responsiblePerson', label: 'Responsable' },
+                      { key: 'status', label: 'Estado' },
+                      { key: 'origin', label: 'Origen' },
+                      { key: 'creationDate', label: 'Creado' },
+                      { key: 'lastPaymentDate', label: 'Último Pago' }
+                    ].map(({ key, label }) => (
+                      <th
+                        key={key}
+                        className="text-left py-4 px-4 text-slate-300 font-medium cursor-pointer hover:text-white transition-colors touch-manipulation"
+                        onClick={() => handleSort(key)}
+                      >
+                        <div className="flex items-center gap-2">
+                          {label}
+                          {sortField === key && (
+                            <ApperIcon
+                              name={sortDirection === 'asc' ? 'ArrowUp' : 'ArrowDown'}
+                              size={16}
+                              className="text-primary"
+                            />
+                          )}
+                        </div>
+                      </th>
+                    ))}
+                    <th className="text-left py-4 px-4 text-slate-300 font-medium w-36">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredReservations.map((reservation, index) => (
+                    <motion.tr
+                      key={reservation.Id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="border-b border-slate-600/10 hover:bg-slate-700/20 transition-colors"
+                    >
+                      <td className="py-4 px-4 text-slate-200 font-medium">{reservation.tableNumber}</td>
+                      <td className="py-4 px-4 text-slate-200 max-w-48 truncate" title={reservation.event}>
+                        {reservation.event}
+                      </td>
+                      <td className="py-4 px-4 text-slate-200 font-medium">{reservation.clientName}</td>
+                      <td className="py-4 px-4 text-slate-300">{reservation.phone}</td>
+                      <td className="py-4 px-4 text-slate-300 max-w-48 truncate" title={reservation.email}>
+                        {reservation.email}
+                      </td>
+                      <td className="py-4 px-4">
+                        <Badge variant="default">{reservation.tableType}</Badge>
+                      </td>
+                      <td className="py-4 px-4 text-slate-200 font-medium">
+                        {formatCurrency(reservation.totalPrice)}
+                      </td>
+                      <td className="py-4 px-4 text-success font-medium">
+                        {formatCurrency(reservation.advancePaid)}
+                      </td>
+                      <td className="py-4 px-4 text-warning font-medium">
+                        {formatCurrency(reservation.pendingBalance)}
+                      </td>
+                      <td className="py-4 px-4 text-slate-300">{reservation.paymentMethod}</td>
+                      <td className="py-4 px-4 text-slate-200">{reservation.responsiblePerson}</td>
+                      <td className="py-4 px-4">
+                        <Badge variant={getStatusVariant(reservation.status)}>
+                          {reservation.status}
+                        </Badge>
+                      </td>
+                      <td className="py-4 px-4 text-slate-300">{reservation.origin}</td>
+                      <td className="py-4 px-4 text-slate-300">{formatDate(reservation.creationDate)}</td>
+                      <td className="py-4 px-4 text-slate-300">{formatDate(reservation.lastPaymentDate)}</td>
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleView(reservation)}
+                            className="h-9 w-9 p-0 touch-manipulation"
+                            title="Ver detalles"
+                          >
+                            <ApperIcon name="Eye" size={16} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(reservation)}
+                            className="h-9 w-9 p-0 touch-manipulation"
+                            title="Editar"
+                          >
+                            <ApperIcon name="Edit" size={16} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(reservation.Id)}
+                            className="h-9 w-9 p-0 text-error hover:text-error/80 touch-manipulation"
+                            title="Eliminar"
+                          >
+                            <ApperIcon name="Trash2" size={16} />
+                          </Button>
+                        </div>
+                      </td>
+                    </motion.tr>
                   ))}
-                  <th className="text-left py-3 px-4 text-slate-300 font-medium w-32">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredReservations.map((reservation, index) => (
-                  <motion.tr
-                    key={reservation.Id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="border-b border-slate-600/10 hover:bg-slate-700/20 transition-colors"
-                  >
-                    <td className="py-3 px-4 text-slate-200 font-medium">{reservation.tableNumber}</td>
-                    <td className="py-3 px-4 text-slate-200 max-w-48 truncate" title={reservation.event}>
-                      {reservation.event}
-                    </td>
-                    <td className="py-3 px-4 text-slate-200 font-medium">{reservation.clientName}</td>
-                    <td className="py-3 px-4 text-slate-300">{reservation.phone}</td>
-                    <td className="py-3 px-4 text-slate-300 max-w-48 truncate" title={reservation.email}>
-                      {reservation.email}
-                    </td>
-                    <td className="py-3 px-4">
-                      <Badge variant="default">{reservation.tableType}</Badge>
-                    </td>
-                    <td className="py-3 px-4 text-slate-200 font-medium">
-                      {formatCurrency(reservation.totalPrice)}
-                    </td>
-                    <td className="py-3 px-4 text-success font-medium">
-                      {formatCurrency(reservation.advancePaid)}
-                    </td>
-                    <td className="py-3 px-4 text-warning font-medium">
-                      {formatCurrency(reservation.pendingBalance)}
-                    </td>
-                    <td className="py-3 px-4 text-slate-300">{reservation.paymentMethod}</td>
-                    <td className="py-3 px-4 text-slate-200">{reservation.responsiblePerson}</td>
-                    <td className="py-3 px-4">
-                      <Badge variant={getStatusVariant(reservation.status)}>
-                        {reservation.status}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-4 text-slate-300">{reservation.origin}</td>
-                    <td className="py-3 px-4 text-slate-300">{formatDate(reservation.creationDate)}</td>
-                    <td className="py-3 px-4 text-slate-300">{formatDate(reservation.lastPaymentDate)}</td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleView(reservation)}
-                          className="p-2"
-                          title="Ver detalles"
-                        >
-                          <ApperIcon name="Eye" size={16} />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEdit(reservation)}
-                          className="p-2"
-                          title="Editar"
-                        >
-                          <ApperIcon name="Edit" size={16} />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(reservation.Id)}
-                          className="p-2 text-error hover:text-error/80"
-                          title="Eliminar"
-                        >
-                          <ApperIcon name="Trash2" size={16} />
-                        </Button>
-</div>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </Card>
 
-      {/* Notes Section (Mobile Friendly) */}
+{/* Notes Section (Mobile Friendly) */}
       {filteredReservations.some(r => r.notes) && (
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <h3 className="text-lg font-semibold text-white mb-4">Notas de Reservas</h3>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {filteredReservations
               .filter(r => r.notes)
               .map(reservation => (
                 <div key={reservation.Id} className="bg-slate-700/30 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <ApperIcon name="FileText" size={16} className="text-primary" />
-                    <span className="font-medium text-white">{reservation.clientName}</span>
-                    <span className="text-slate-400">-</span>
-                    <span className="text-slate-400">{reservation.event}</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2">
+                      <ApperIcon name="FileText" size={16} className="text-primary shrink-0" />
+                      <span className="font-medium text-white">{reservation.clientName}</span>
+                    </div>
+                    <span className="text-slate-400 hidden sm:inline">-</span>
+                    <span className="text-slate-400 text-sm sm:text-base truncate">{reservation.event}</span>
                   </div>
-                  <p className="text-slate-300">{reservation.notes}</p>
+                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{reservation.notes}</p>
                 </div>
               ))}
           </div>
         </Card>
-)}
+      )}
 
-      {/* Quick Add Reservation Modal */}
+{/* Quick Add Reservation Modal */}
       {showQuickAdd && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={(e) => e.target === e.currentTarget && closeQuickAdd()}
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-surface rounded-2xl border border-slate-600/30 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            className="bg-surface rounded-2xl border border-slate-600/30 w-full max-w-lg max-h-[95vh] overflow-y-auto shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 pb-4 border-b border-slate-600/20">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <ApperIcon name="Plus" size={24} className="text-primary" />
-                Quick Add Reserva
-              </h3>
-              <button
-                onClick={closeQuickAdd}
-                className="text-slate-400 hover:text-white transition-colors p-1 hover:bg-slate-700 rounded-lg"
-              >
-                <ApperIcon name="X" size={20} />
-              </button>
+            <div className="sticky top-0 bg-surface border-b border-slate-600/20 p-4 sm:p-6 rounded-t-2xl">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                  <ApperIcon name="Plus" size={20} className="text-primary" />
+                  <span className="hidden sm:inline">Quick Add Reserva</span>
+                  <span className="sm:hidden">Añadir Reserva</span>
+                </h3>
+                <button
+                  onClick={closeQuickAdd}
+                  className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-slate-700 rounded-lg touch-manipulation"
+                >
+                  <ApperIcon name="X" size={20} />
+                </button>
+              </div>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleQuickSubmit} className="p-6 space-y-6">
+            <form onSubmit={handleQuickSubmit} className="p-4 sm:p-6 space-y-5 sm:space-y-6">
               {/* Table Number */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">
@@ -621,7 +700,7 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
                   value={quickFormData.tableNumber}
                   onChange={handleQuickFormChange}
                   placeholder="Ej: VIP-001"
-                  className="h-12 text-base"
+                  className="h-11 sm:h-12 text-base"
                   required
                 />
               </div>
@@ -637,7 +716,7 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
                   value={quickFormData.phone}
                   onChange={handleQuickFormChange}
                   placeholder="+34 666 123 456"
-                  className="h-12 text-base"
+                  className="h-11 sm:h-12 text-base"
                   required
                 />
               </div>
@@ -651,11 +730,11 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
                   name="event"
                   value={quickFormData.event}
                   onChange={handleQuickFormChange}
-                  className="h-12 text-base"
+                  className="h-11 sm:h-12 text-base"
                   required
                 >
                   <option value="">Seleccionar evento...</option>
-{events.map((event) => (
+                  {events.map((event) => (
                     <option key={event.Id} value={event.title || event.name}>
                       {event.title || event.name}
                     </option>
@@ -676,7 +755,7 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
                   value={quickFormData.advancePaid}
                   onChange={handleQuickFormChange}
                   placeholder="0.00"
-                  className="h-12 text-base"
+                  className="h-11 sm:h-12 text-base"
                 />
                 <p className="text-xs text-slate-400">
                   Dejar vacío si no hay pago inicial
@@ -684,7 +763,7 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
               </div>
 
               {/* Default Values Info */}
-              <div className="bg-slate-800/50 rounded-lg p-4 space-y-2">
+              <div className="bg-slate-800/50 rounded-lg p-3 sm:p-4 space-y-2">
                 <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2">
                   <ApperIcon name="Info" size={16} />
                   Valores por Defecto
@@ -698,19 +777,19 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <Button
                   type="button"
                   variant="secondary"
                   onClick={closeQuickAdd}
-                  className="flex-1 h-12 text-base"
+                  className="flex-1 h-11 sm:h-12 text-base touch-manipulation active:scale-95"
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
                   disabled={quickFormLoading}
-                  className="flex-1 h-12 text-base bg-gradient-to-r from-primary to-accent hover:shadow-lg hover:shadow-primary/30"
+                  className="flex-1 h-11 sm:h-12 text-base bg-gradient-to-r from-primary to-accent hover:shadow-lg hover:shadow-primary/30 touch-manipulation active:scale-95"
                 >
                   {quickFormLoading ? (
                     <div className="flex items-center gap-2">
@@ -720,7 +799,8 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
                   ) : (
                     <>
                       <ApperIcon name="Save" size={16} />
-                      Guardar Reserva
+                      <span className="hidden sm:inline">Guardar Reserva</span>
+                      <span className="sm:hidden">Guardar</span>
                     </>
                   )}
                 </Button>
@@ -732,5 +812,4 @@ const selectedEvent = events.find(event => event.name === quickFormData.event ||
     </motion.div>
   );
 };
-
 export default VipReservations;

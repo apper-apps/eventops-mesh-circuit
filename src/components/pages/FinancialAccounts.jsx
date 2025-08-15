@@ -276,12 +276,12 @@ function FinancialAccounts() {
   if (error) return <Error message={error} onRetry={loadData} />;
 
   return (
-    <div className="space-y-6">
+<div className="space-y-4 sm:space-y-6 max-w-full">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">Cuentas Financieras</h1>
-          <p className="text-slate-400">Gestiona las cuentas financieras por evento</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-100">Cuentas Financieras</h1>
+          <p className="text-slate-400 text-sm sm:text-base">Gestiona las cuentas financieras por evento</p>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-3">
@@ -522,70 +522,134 @@ function FinancialAccounts() {
           </div>
 
           {/* Transactions Table */}
-          <div className="overflow-x-auto">
+<div className="overflow-x-auto">
             {getFilteredTransactions().length > 0 ? (
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-600">
-                    <th className="text-left py-3 px-2 text-sm font-medium text-slate-400">Fecha</th>
-                    <th className="text-left py-3 px-2 text-sm font-medium text-slate-400">Descripción</th>
-                    <th className="text-left py-3 px-2 text-sm font-medium text-slate-400">Tipo</th>
-                    <th className="text-right py-3 px-2 text-sm font-medium text-slate-400">Monto</th>
-                    <th className="text-left py-3 px-2 text-sm font-medium text-slate-400">Evento</th>
-                    <th className="text-center py-3 px-2 text-sm font-medium text-slate-400">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <>
+                {/* Mobile Card Layout */}
+                <div className="block sm:hidden space-y-3 p-4">
                   {getFilteredTransactions().map(transaction => {
                     const event = events.find(e => e.Id === transaction.eventId);
                     return (
-                      <tr key={transaction.Id} className="border-b border-slate-700/50">
-                        <td className="py-3 px-2 text-sm text-slate-300">
-                          {formatDate(transaction.date)}
-                        </td>
-                        <td className="py-3 px-2 text-sm text-slate-100">
-                          {transaction.description}
-                        </td>
-                        <td className="py-3 px-2">
+                      <div key={transaction.Id} className="bg-slate-700/30 rounded-lg p-4 space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-white truncate">{transaction.description}</p>
+                            <p className="text-sm text-slate-400">{formatDate(transaction.date)}</p>
+                          </div>
                           <Badge 
-                            variant={transaction.type === 'income' ? 'success' : 'destructive'}
+                            variant={transaction.type === 'income' ? 'success' : 'error'}
                             size="sm"
                           >
                             {transaction.type === 'income' ? 'Ingreso' : 'Gasto'}
                           </Badge>
-                        </td>
-                        <td className={`py-3 px-2 text-right font-medium ${
-                          transaction.type === 'income' ? 'text-success' : 'text-error'
-                        }`}>
-                          {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
-                        </td>
-                        <td className="py-3 px-2 text-sm text-slate-300">
-{event ? (event.title || event.name) : 'Sin evento'}
-                        </td>
-                        <td className="py-3 px-2">
-                          <div className="flex justify-center gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEditTransaction(transaction)}
-                            >
-                              <ApperIcon name="Edit" size={14} />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteTransaction(transaction.Id)}
-                              className="text-error hover:text-error"
-                            >
-                              <ApperIcon name="Trash2" size={14} />
-                            </Button>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm text-slate-400">Evento</p>
+                            <p className="text-sm text-slate-200 truncate">
+                              {event ? (event.title || event.name) : 'Sin evento'}
+                            </p>
                           </div>
-                        </td>
-                      </tr>
+                          <div className="text-right">
+                            <p className={`font-bold text-lg ${
+                              transaction.type === 'income' ? 'text-success' : 'text-error'
+                            }`}>
+                              {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-end gap-2 pt-2 border-t border-slate-600/30">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditTransaction(transaction)}
+                            className="h-9 px-3 touch-manipulation"
+                          >
+                            <ApperIcon name="Edit" size={16} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteTransaction(transaction.Id)}
+                            className="h-9 px-3 text-error hover:text-error touch-manipulation"
+                          >
+                            <ApperIcon name="Trash2" size={16} />
+                          </Button>
+                        </div>
+                      </div>
                     );
                   })}
-                </tbody>
-              </table>
+                </div>
+                
+                {/* Desktop Table Layout */}
+                <div className="hidden sm:block">
+                  <table className="w-full min-w-[700px]">
+                    <thead>
+                      <tr className="border-b border-slate-600">
+                        <th className="text-left py-4 px-3 text-sm font-medium text-slate-400">Fecha</th>
+                        <th className="text-left py-4 px-3 text-sm font-medium text-slate-400">Descripción</th>
+                        <th className="text-left py-4 px-3 text-sm font-medium text-slate-400">Tipo</th>
+                        <th className="text-right py-4 px-3 text-sm font-medium text-slate-400">Monto</th>
+                        <th className="text-left py-4 px-3 text-sm font-medium text-slate-400">Evento</th>
+                        <th className="text-center py-4 px-3 text-sm font-medium text-slate-400 w-32">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getFilteredTransactions().map(transaction => {
+                        const event = events.find(e => e.Id === transaction.eventId);
+                        return (
+                          <tr key={transaction.Id} className="border-b border-slate-700/50 hover:bg-slate-700/20 transition-colors">
+                            <td className="py-4 px-3 text-sm text-slate-300">
+                              {formatDate(transaction.date)}
+                            </td>
+                            <td className="py-4 px-3 text-sm text-slate-100 max-w-64 truncate" title={transaction.description}>
+                              {transaction.description}
+                            </td>
+                            <td className="py-4 px-3">
+                              <Badge 
+                                variant={transaction.type === 'income' ? 'success' : 'error'}
+                                size="sm"
+                              >
+                                {transaction.type === 'income' ? 'Ingreso' : 'Gasto'}
+                              </Badge>
+                            </td>
+                            <td className={`py-4 px-3 text-right font-medium ${
+                              transaction.type === 'income' ? 'text-success' : 'text-error'
+                            }`}>
+                              {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                            </td>
+                            <td className="py-4 px-3 text-sm text-slate-300 max-w-48 truncate" title={event ? (event.title || event.name) : 'Sin evento'}>
+                              {event ? (event.title || event.name) : 'Sin evento'}
+                            </td>
+                            <td className="py-4 px-3">
+                              <div className="flex justify-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleEditTransaction(transaction)}
+                                  className="h-9 w-9 p-0 touch-manipulation"
+                                >
+                                  <ApperIcon name="Edit" size={16} />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDeleteTransaction(transaction.Id)}
+                                  className="h-9 w-9 p-0 text-error hover:text-error touch-manipulation"
+                                >
+                                  <ApperIcon name="Trash2" size={16} />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             ) : (
               <Empty message="No hay transacciones registradas para esta cuenta" />
             )}
@@ -594,35 +658,38 @@ function FinancialAccounts() {
       )}
 
       {/* Transaction Modal */}
+{/* Transaction Modal */}
       {showTransactionModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-surface rounded-xl p-6 w-full max-w-md"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-surface rounded-xl p-4 sm:p-6 w-full max-w-lg max-h-[95vh] overflow-y-auto"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-white">
                 {editingTransaction ? 'Editar Transacción' : 'Nueva Transacción'}
               </h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowTransactionModal(false)}
+                className="h-9 w-9 p-0 touch-manipulation"
               >
-                <ApperIcon name="X" size={16} />
+                <ApperIcon name="X" size={18} />
               </Button>
             </div>
 
-            <form onSubmit={handleTransactionSubmit} className="space-y-4">
+            <form onSubmit={handleTransactionSubmit} className="space-y-4 sm:space-y-5">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Tipo
                 </label>
                 <Select
                   name="type"
                   value={transactionForm.type}
                   onChange={handleTransactionFormChange}
+                  className="h-11 sm:h-12"
                   required
                 >
                   <option value="income">Ingreso</option>
@@ -631,7 +698,7 @@ function FinancialAccounts() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Monto *
                 </label>
                 <Input
@@ -642,12 +709,13 @@ function FinancialAccounts() {
                   placeholder="0.00"
                   step="0.01"
                   min="0.01"
+                  className="h-11 sm:h-12"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Descripción *
                 </label>
                 <Input
@@ -656,12 +724,13 @@ function FinancialAccounts() {
                   value={transactionForm.description}
                   onChange={handleTransactionFormChange}
                   placeholder="Descripción de la transacción"
+                  className="h-11 sm:h-12"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Fecha *
                 </label>
                 <Input
@@ -669,21 +738,23 @@ function FinancialAccounts() {
                   name="date"
                   value={transactionForm.date}
                   onChange={handleTransactionFormChange}
+                  className="h-11 sm:h-12"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Evento
                 </label>
                 <Select
                   name="eventId"
                   value={transactionForm.eventId}
                   onChange={handleTransactionFormChange}
+                  className="h-11 sm:h-12"
                 >
                   <option value="">Seleccionar evento (opcional)</option>
-{events.map(event => (
+                  {events.map(event => (
                     <option key={event.Id} value={event.Id}>
                       {event.title || event.name}
                     </option>
@@ -691,16 +762,19 @@ function FinancialAccounts() {
                 </Select>
               </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button type="submit" className="flex-1">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <Button 
+                  type="submit" 
+                  className="flex-1 h-11 sm:h-12 touch-manipulation active:scale-95"
+                >
                   <ApperIcon name="Save" size={16} />
                   {editingTransaction ? 'Actualizar' : 'Crear'}
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   onClick={() => setShowTransactionModal(false)}
-                  className="flex-1"
+                  className="flex-1 h-11 sm:h-12 touch-manipulation active:scale-95"
                 >
                   Cancelar
                 </Button>
@@ -712,26 +786,27 @@ function FinancialAccounts() {
 
       {/* Responsible Person Modal */}
       {showResponsibleModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-surface rounded-xl p-6 w-full max-w-md"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-surface rounded-xl p-4 sm:p-6 w-full max-w-lg max-h-[95vh] overflow-y-auto"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Asignar Responsable</h3>
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-white">Asignar Responsable</h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowResponsibleModal(false)}
+                className="h-9 w-9 p-0 touch-manipulation"
               >
-                <ApperIcon name="X" size={16} />
+                <ApperIcon name="X" size={18} />
               </Button>
             </div>
 
-            <form onSubmit={handleResponsibleSubmit} className="space-y-4">
+            <form onSubmit={handleResponsibleSubmit} className="space-y-4 sm:space-y-5">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Nombre Completo *
                 </label>
                 <Input
@@ -740,12 +815,13 @@ function FinancialAccounts() {
                   value={responsibleForm.name}
                   onChange={handleResponsibleFormChange}
                   placeholder="Nombre del responsable"
+                  className="h-11 sm:h-12"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Email
                 </label>
                 <Input
@@ -754,11 +830,12 @@ function FinancialAccounts() {
                   value={responsibleForm.email}
                   onChange={handleResponsibleFormChange}
                   placeholder="correo@ejemplo.com"
+                  className="h-11 sm:h-12"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Teléfono
                 </label>
                 <Input
@@ -767,19 +844,23 @@ function FinancialAccounts() {
                   value={responsibleForm.phone}
                   onChange={handleResponsibleFormChange}
                   placeholder="+52 123 456 7890"
+                  className="h-11 sm:h-12"
                 />
               </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button type="submit" className="flex-1">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <Button 
+                  type="submit" 
+                  className="flex-1 h-11 sm:h-12 touch-manipulation active:scale-95"
+                >
                   <ApperIcon name="Save" size={16} />
                   Asignar
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   onClick={() => setShowResponsibleModal(false)}
-                  className="flex-1"
+                  className="flex-1 h-11 sm:h-12 touch-manipulation active:scale-95"
                 >
                   Cancelar
                 </Button>
