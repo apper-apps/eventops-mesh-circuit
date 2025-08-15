@@ -63,6 +63,7 @@ class PermissionService {
       case 'reservations':
         return this.canAccessReservation(user, resourceId);
       case 'inventory':
+case 'inventory':
         return this.canAccessInventory(user, resourceId);
       default:
         return false;
@@ -163,5 +164,7 @@ class PermissionService {
   }
 }
 
-export default new PermissionService();
-export { PermissionService };
+const permissionService = new PermissionService();
+
+export { permissionService };
+export default PermissionService;
