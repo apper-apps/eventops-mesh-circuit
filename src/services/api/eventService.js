@@ -8,9 +8,21 @@ class EventService {
     this.events = [...eventsData];
   }
 
-async getAll() {
+async getAll(user = null) {
     await delay(300);
-    return [...this.events];
+    let events = [...this.events];
+    
+    // Apply user-based filtering if user context provided
+    if (user) {
+      if (user.role === 'entrepreneur') {
+        events = events.filter(event => 
+          user.assignedEventIds && user.assignedEventIds.includes(event.Id)
+        );
+      }
+      // SaaS admin and owners see all events
+    }
+    
+    return events;
   }
 
   async getById(id) {

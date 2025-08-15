@@ -11,10 +11,21 @@ class FinancialAccountsService {
     this.transactions = [...mockTransactions];
   }
 
-  // Account management
-  async getAll() {
+// Account management
+  async getAll(user = null) {
     await delay(300);
-    return [...this.accounts];
+    let accounts = [...this.accounts];
+    
+    // Apply user-based filtering if user context provided
+    if (user && user.role === 'entrepreneur') {
+      // Entrepreneurs can only see accounts related to their assigned events
+      accounts = accounts.filter(account => 
+        !account.eventId || 
+        (user.assignedEventIds && user.assignedEventIds.includes(account.eventId))
+      );
+    }
+    
+    return accounts;
   }
 
   async getById(id) {
@@ -92,9 +103,21 @@ class FinancialAccountsService {
   }
 
   // Transaction management
-  async getAllTransactions() {
+async getAllTransactions(user = null) {
     await delay(300);
-    return [...this.transactions];
+    let transactions = [...this.transactions];
+    
+    // Apply user-based filtering if user context provided
+    if (user && user.role === 'entrepreneur') {
+      // Filter transactions by accessible accounts
+      const accessibleAccounts = await this.getAll(user);
+      const accessibleAccountIds = accessibleAccounts.map(acc => acc.Id);
+      transactions = transactions.filter(transaction => 
+        accessibleAccountIds.includes(transaction.accountId)
+      );
+    }
+    
+    return transactions;
   }
 
   async getTransactionById(id) {

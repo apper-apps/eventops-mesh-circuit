@@ -2,16 +2,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import SidebarItem from "@/components/molecules/SidebarItem";
 import ApperIcon from "@/components/ApperIcon";
-
+import { useAuth } from "@/contexts/AuthContext";
+import permissionService from "@/services/api/permissionService";
 const Sidebar = ({ isOpen, onClose }) => {
-const menuItems = [
-    { to: "/", icon: "LayoutDashboard", label: "Dashboard" },
-    { to: "/events", icon: "Calendar", label: "Eventos", badge: "3" },
-    { to: "/budgets", icon: "Calculator", label: "Presupuestos" },
-    { to: "/vip-reservations", icon: "Crown", label: "Reservas VIP" },
-    { to: "/bar-inventory", icon: "Package", label: "Bar e Inventario" },
-    { to: "/financial-accounts", icon: "Wallet", label: "Cuentas Financieras" }
-  ];
+  const { user } = useAuth();
+  const menuItems = permissionService.getMenuItemsForRole(user);
 
 // Desktop sidebar
   const DesktopSidebar = () => (
@@ -28,7 +23,7 @@ const menuItems = [
         </div>
       </div>
       
-      <nav className="flex-1 p-4 space-y-2">
+<nav className="flex-1 p-4 space-y-2">
         {menuItems.map((item) => (
           <SidebarItem
             key={item.to}
@@ -94,7 +89,7 @@ const menuItems = [
           </div>
         </div>
         
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+<nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {menuItems.map((item) => (
             <div key={item.to} onClick={onClose}>
               <SidebarItem

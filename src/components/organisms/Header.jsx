@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Button from "@/components/atoms/Button";
 import Select from "@/components/atoms/Select";
 import Badge from "@/components/atoms/Badge";
 import ApperIcon from "@/components/ApperIcon";
 import { useFilters } from "@/contexts/FilterContext";
+import { useAuth } from "@/contexts/AuthContext";
 const Header = ({ title, onMenuClick, showMenuButton = true }) => {
-  const { events, globalFilters, updateGlobalFilters, resetFilters, getActiveFiltersCount } = useFilters();
+const { events, globalFilters, updateGlobalFilters, resetFilters, getActiveFiltersCount } = useFilters();
+  const { user, logout, getAccessibleEvents } = useAuth();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const accessibleEvents = getAccessibleEvents(events);
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -10 }}
@@ -34,14 +40,14 @@ const Header = ({ title, onMenuClick, showMenuButton = true }) => {
           {/* Global Filters */}
           <div className="flex items-center gap-3">
             {/* Event Selector */}
-            <div className="flex items-center gap-2">
+<div className="flex items-center gap-2">
               <Select
                 value={globalFilters.selectedEventId}
                 onChange={(e) => updateGlobalFilters({ selectedEventId: e.target.value })}
                 className="w-48 text-sm"
               >
                 <option value="all">Todos los Eventos</option>
-                {events.map(event => (
+                {accessibleEvents.map(event => (
                   <option key={event.Id} value={event.Id}>
                     {event.title}
                   </option>
@@ -104,7 +110,7 @@ const Header = ({ title, onMenuClick, showMenuButton = true }) => {
 
           <div className="w-px h-6 bg-slate-600"></div>
 
-          {/* User Section */}
+{/* User Section */}
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="sm" icon="Bell" className="relative">
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full"></span>
@@ -114,14 +120,51 @@ const Header = ({ title, onMenuClick, showMenuButton = true }) => {
             
             <div className="w-px h-6 bg-slate-600"></div>
             
-            <div className="flex items-center gap-3">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-medium text-slate-200">Admin</p>
-                <p className="text-xs text-slate-400">Organizador</p>
+            <div className="relative">
+              <div 
+                className="flex items-center gap-3 cursor-pointer"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+              >
+                <div className="text-right hidden sm:block">
+                  <p className="text-sm font-medium text-slate-200">{user?.name || 'Usuario'}</p>
+                  <p className="text-xs text-slate-400">{user?.roleLabel || 'Sin rol'}</p>
+                </div>
+                <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
+                  <ApperIcon name="User" size={16} className="text-white" />
+                </div>
+                <ApperIcon name="ChevronDown" size={16} className="text-slate-400" />
               </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
-                <ApperIcon name="User" size={16} className="text-white" />
-              </div>
+
+              {showUserMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute right-0 top-full mt-2 w-48 bg-surface border border-slate-600 rounded-lg shadow-lg z-50"
+                >
+                  <div className="p-3 border-b border-slate-600">
+                    <p className="text-sm font-medium text-slate-200">{user?.name}</p>
+                    <p className="text-xs text-slate-400">{user?.email}</p>
+                    <div className="mt-1">
+                      <Badge variant="outline" size="sm">
+                        {user?.roleLabel}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="p-1">
+                    <button
+                      onClick={() => {
+                        logout();
+                        setShowUserMenu(false);
+                      }}
+                      className="w-full px-3 py-2 text-left text-sm text-slate-300 hover:bg-slate-700 rounded flex items-center gap-2"
+                    >
+                      <ApperIcon name="LogOut" size={16} />
+                      Cerrar Sesión
+                    </button>
+                  </div>
+                </motion.div>
+              )}
             </div>
           </div>
         </div>
