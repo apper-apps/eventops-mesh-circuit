@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import ApperIcon from "@/components/ApperIcon";
 import SidebarItem from "@/components/molecules/SidebarItem";
-import permissionService from "@/services/api/permissionService";
+import { permissionService } from "@/services/api/permissionService";
 const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const menuItems = permissionService.getMenuItemsForRole(user);
