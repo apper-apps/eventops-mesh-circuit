@@ -245,7 +245,7 @@ if (!quickFormData.phone.trim()) {
     setQuickFormLoading(true);
     
     try {
-      const selectedEvent = events.find(event => event.name === quickFormData.event);
+const selectedEvent = events.find(event => event.name === quickFormData.event || event.title === quickFormData.event);
       const paidAmount = parseFloat(quickFormData.advancePaid) || 0;
       const defaultPrice = 2500; // Default total price
       
@@ -655,9 +655,9 @@ if (!quickFormData.phone.trim()) {
                   required
                 >
                   <option value="">Seleccionar evento...</option>
-                  {events.map((event) => (
-                    <option key={event.Id} value={event.name}>
-                      {event.name}
+{events.map((event) => (
+                    <option key={event.Id} value={event.title || event.name}>
+                      {event.title || event.name}
                     </option>
                   ))}
                 </Select>

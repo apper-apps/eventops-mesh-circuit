@@ -7,7 +7,7 @@ const Layout = () => {
 const [sidebarOpen, setSidebarOpen] = useState(false);
 
 return (
-    <FilterProvider>
+<FilterProvider>
       <div className="min-h-screen bg-background">
         {/* Sidebar */}
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />

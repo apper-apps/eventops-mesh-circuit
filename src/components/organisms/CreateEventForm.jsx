@@ -118,7 +118,7 @@ const handleSubmit = async (e) => {
 
     try {
       setLoading(true);
-      const eventData = {
+const eventData = {
         ...formData,
         estimatedAttendance: parseInt(formData.estimatedAttendance),
         estimatedTables: parseInt(formData.estimatedTables),

@@ -291,9 +291,9 @@ function FinancialAccounts() {
             className="min-w-[200px]"
           >
             <option value="">Todos los eventos</option>
-            {events.map(event => (
+{events.map(event => (
               <option key={event.Id} value={event.Id}>
-                {event.title}
+                {event.title || event.name}
               </option>
             ))}
           </Select>
@@ -560,7 +560,7 @@ function FinancialAccounts() {
                           {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                         </td>
                         <td className="py-3 px-2 text-sm text-slate-300">
-                          {event ? event.title : 'Sin evento'}
+{event ? (event.title || event.name) : 'Sin evento'}
                         </td>
                         <td className="py-3 px-2">
                           <div className="flex justify-center gap-1">
@@ -683,9 +683,9 @@ function FinancialAccounts() {
                   onChange={handleTransactionFormChange}
                 >
                   <option value="">Seleccionar evento (opcional)</option>
-                  {events.map(event => (
+{events.map(event => (
                     <option key={event.Id} value={event.Id}>
-                      {event.title}
+                      {event.title || event.name}
                     </option>
                   ))}
                 </Select>

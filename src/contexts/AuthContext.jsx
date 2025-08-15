@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { userService } from '@/services/api/userService';
+import { useSelector } from 'react-redux';
 import { permissionService } from '@/services/api/permissionService';
 import { toast } from 'react-toastify';
 
@@ -31,11 +31,11 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (email, role, assignedEventIds = []) => {
+const login = async () => {
+    // Authentication is handled by ApperUI, this is just a placeholder
     try {
       setLoading(true);
-      const userData = await userService.authenticate(email, role, assignedEventIds);
-      setUser(userData);
+      // ApperUI handles the actual authentication
       localStorage.setItem('eventops_user', JSON.stringify(userData));
       toast.success(`Bienvenido como ${userData.roleLabel}`);
       return userData;
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
     toast.info('Sesión cerrada correctamente');
   };
 
-  const hasPermission = (permission, resourceId = null) => {
+const hasPermission = (permission, resourceId = null) => {
     if (!user) return false;
     return permissionService.checkPermission(user, permission, resourceId);
   };
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     canAccessEvent,
     getAccessibleEvents,
     getAccessibleAccounts,
-    isAuthenticated: !!user,
+isAuthenticated: !!user,
     isSaasAdmin: user?.role === 'saas_admin',
     isOwner: user?.role === 'owner',
     isEntrepreneur: user?.role === 'entrepreneur'
