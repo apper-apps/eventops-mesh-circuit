@@ -215,9 +215,9 @@ const [sortField, setSortField] = useState('creationDate');
       errors.push('Número de mesa es requerido');
     }
     
-    if (!quickFormData.phone.trim()) {
+if (!quickFormData.phone.trim()) {
       errors.push('Teléfono es requerido');
-    } else if (!/^[\+]?[\d\s\-\(\)]{9,}$/.test(quickFormData.phone.trim())) {
+    } else if (!/^[+]?[\d\s\-()]{9,}$/.test(quickFormData.phone.trim())) {
       errors.push('Formato de teléfono inválido');
     }
     
