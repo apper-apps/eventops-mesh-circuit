@@ -165,7 +165,6 @@ function App() {
 function AppWrapper() {
   return (
     <BrowserRouter>
-<BrowserRouter>
       <App />
     </BrowserRouter>
   );

@@ -36,9 +36,8 @@ const login = async () => {
     try {
       setLoading(true);
       // ApperUI handles the actual authentication
-      localStorage.setItem('eventops_user', JSON.stringify(userData));
-      toast.success(`Bienvenido como ${userData.roleLabel}`);
-      return userData;
+      toast.success('Inicio de sesión exitoso');
+      return true;
     } catch (error) {
       toast.error('Error en el inicio de sesión');
       throw error;
