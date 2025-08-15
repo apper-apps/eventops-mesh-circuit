@@ -6,8 +6,20 @@ import SidebarItem from "@/components/molecules/SidebarItem";
 import { permissionService } from "@/services/api/permissionService";
 const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useAuth();
-  const menuItems = permissionService.getMenuItemsForRole(user);
-
+  
+  // Elementos de menú por defecto basados en las rutas de la aplicación
+  const defaultMenuItems = [
+    { to: '/', icon: 'BarChart3', label: 'Dashboard' },
+    { to: '/events', icon: 'Calendar', label: 'Eventos' },
+    { to: '/budgets', icon: 'Calculator', label: 'Presupuestos' },
+    { to: '/vip-reservations', icon: 'Crown', label: 'Reservas VIP' },
+    { to: '/financial-accounts', icon: 'Wallet', label: 'Cuentas Financieras' },
+    { to: '/bar-inventory', icon: 'Package', label: 'Inventario Bar' }
+  ];
+  
+  // Usar elementos del servicio de permisos si están disponibles, sino usar los predeterminados
+  const permissionMenuItems = permissionService.getMenuItemsForRole(user);
+  const menuItems = (permissionMenuItems && permissionMenuItems.length > 0) ? permissionMenuItems : defaultMenuItems;
 // Desktop sidebar
   const DesktopSidebar = () => (
     <div className="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:left-0 w-64 bg-surface border-r border-slate-600/20 min-h-screen z-30">
