@@ -170,7 +170,7 @@ class BudgetService {
     }
   }
 
-  async create(budgetData) {
+async create(budgetData) {
     try {
       if (!this.apperClient) this.initializeClient();
       
@@ -200,11 +200,11 @@ class BudgetService {
         if (successfulBudget) {
           createdBudget = successfulBudget.data;
           
-          // Create categories if provided
+          // Create categories if provided (including automatic ticket categories)
           if (budgetData.categories && budgetData.categories.length > 0) {
             const categoryRecords = budgetData.categories.map(cat => ({
               Name: cat.name,
-              Tags: "",
+              Tags: this.getCategoryTags(cat.name),
               budget_id_c: createdBudget.Id,
               estimated_c: cat.estimated || 0,
               actual_c: cat.actual || 0,
@@ -219,10 +219,26 @@ class BudgetService {
             
             if (!categoryResponse.success) {
               console.error("Error creating budget categories:", categoryResponse.message);
+            } else {
+              // Log successful automatic category creation
+              const ticketCategories = categoryRecords.filter(cat => 
+                cat.Name.includes('Pre-sale') || cat.Name.includes('Day-of') || 
+                cat.Name.includes('payments') || cat.Name.includes('Boletero')
+              );
+              if (ticketCategories.length > 0) {
+                console.log(`Auto-created ${ticketCategories.length} ticket categories for event budget`);
+              }
             }
           }
           
-          toast.success(`Budget for "${budgetData.eventName}" created successfully`);
+          const isAutomaticBudget = budgetData.categories && 
+            budgetData.categories.some(cat => cat.name.includes('Boletero.com'));
+          
+          if (isAutomaticBudget) {
+            toast.success(`Event budget created with ticket categories ready for configuration`);
+          } else {
+            toast.success(`Budget for "${budgetData.eventName}" created successfully`);
+          }
         }
       }
       
@@ -237,6 +253,33 @@ class BudgetService {
       }
       return null;
     }
+  }
+
+  // Helper method to assign appropriate tags based on category type
+  getCategoryTags(categoryName) {
+    const name = categoryName.toLowerCase();
+    
+    if (name.includes('pre-sale') && name.includes('online')) {
+      return "online,presale,tickets";
+    } else if (name.includes('day-of') && name.includes('online')) {
+      return "online,dayof,tickets";
+    } else if (name.includes('pre-sale') && name.includes('physical')) {
+      return "physical,presale,tickets";
+    } else if (name.includes('day-of') && name.includes('physical')) {
+      return "physical,dayof,tickets";
+    } else if (name.includes('cash')) {
+      return "payment,cash";
+    } else if (name.includes('terminal')) {
+      return "payment,card,terminal";
+    } else if (name.includes('transfer')) {
+      return "payment,transfer,bank";
+    } else if (name.includes('voucher')) {
+      return "payment,voucher,signed";
+    } else if (name.includes('boletero')) {
+      return "integration,external,sales";
+    }
+    
+    return "";
   }
 
   async update(id, budgetData) {

@@ -118,7 +118,7 @@ const handleSubmit = async (e) => {
 
     try {
       setLoading(true);
-const eventData = {
+      const eventData = {
         ...formData,
         estimatedAttendance: parseInt(formData.estimatedAttendance),
         estimatedTables: parseInt(formData.estimatedTables),
@@ -127,13 +127,60 @@ const eventData = {
         createdAt: new Date().toISOString()
       };
       
-      await eventService.create(eventData);
+      const createdEvent = await eventService.create(eventData);
+      
+      if (createdEvent) {
+        // Auto-create budget with predefined ticket categories
+        await createEventBudget(createdEvent, formData.title);
+      }
+      
       toast.success("¡Evento creado exitosamente!");
       onSuccess();
     } catch (error) {
       toast.error("Error al crear el evento. Inténtalo de nuevo.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const createEventBudget = async (event, eventTitle) => {
+    try {
+      const { default: budgetService } = await import('@/services/api/budgetService');
+      
+      // Define predefined ticket categories with estimated amounts
+      const ticketCategories = [
+        // Cover/General Categories
+        { name: "Pre-sale online 1", estimated: 15000, icon: "Globe" },
+        { name: "Pre-sale online 2", estimated: 12000, icon: "Globe" },
+        { name: "Day-of online", estimated: 8000, icon: "Smartphone" },
+        { name: "Physical pre-sale 1", estimated: 10000, icon: "Store" },
+        { name: "Physical pre-sale 2", estimated: 7000, icon: "Store" },
+        { name: "Physical day-of", estimated: 5000, icon: "MapPin" },
+        
+        // Payment Methods
+        { name: "Cash payments", estimated: 8000, icon: "Banknote" },
+        { name: "Terminal payments", estimated: 25000, icon: "CreditCard" },
+        { name: "Transfer payments", estimated: 15000, icon: "ArrowRightLeft" },
+        { name: "Signed voucher", estimated: 2000, icon: "FileText" },
+        
+        // Integration placeholder
+        { name: "Boletero.com sales", estimated: 0, icon: "ExternalLink" }
+      ];
+      
+      const totalEstimated = ticketCategories.reduce((sum, cat) => sum + cat.estimated, 0);
+      
+      const budgetData = {
+        eventName: eventTitle,
+        totalEstimated: totalEstimated,
+        totalActual: 0,
+        status: "Iniciado",
+        categories: ticketCategories
+      };
+      
+      await budgetService.create(budgetData);
+    } catch (error) {
+      console.error("Error creating event budget:", error);
+      // Don't show error toast as event was created successfully
     }
   };
 
