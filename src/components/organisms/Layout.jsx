@@ -13,7 +13,7 @@ return (
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         {/* Main Content */}
-        <div className="lg:ml-64 min-h-screen flex flex-col">
+<div className="lg:ml-64 min-h-screen flex flex-col">
           <div className="z-40">
             {/* Header */}
             <Header 

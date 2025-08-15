@@ -19,23 +19,27 @@ initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-surface/90 backdrop-blur-sm border-b border-slate-600/20 px-3 sm:px-4 lg:px-6 xl:px-8 py-3 sm:py-4 sticky top-0 z-30"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          {showMenuButton && (
-            <Button
-              variant="ghost"
-              size="sm"
-              icon="Menu"
-              onClick={onMenuClick}
-              className="lg:hidden"
-            />
-          )}
-          <div>
-            <h1 className="text-xl font-bold text-white">{title}</h1>
-            <p className="text-slate-400 text-sm">Gestión de Operaciones y Finanzas</p>
+<div className="flex flex-col gap-4">
+        {/* Title Section */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {showMenuButton && (
+              <Button
+                variant="ghost"
+                size="sm"
+                icon="Menu"
+                onClick={onMenuClick}
+                className="lg:hidden"
+              />
+            )}
+            <div>
+              <h1 className="text-xl font-bold text-white">{title}</h1>
+              <p className="text-slate-400 text-sm">Gestión de Operaciones y Finanzas</p>
+            </div>
           </div>
         </div>
 
+        {/* Filters and User Section */}
 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 lg:gap-4 w-full">
           {/* Global Filters */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 lg:gap-3">
