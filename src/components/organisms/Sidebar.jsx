@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import SidebarItem from "@/components/molecules/SidebarItem";
-import ApperIcon from "@/components/ApperIcon";
 import { useAuth } from "@/contexts/AuthContext";
+import ApperIcon from "@/components/ApperIcon";
+import SidebarItem from "@/components/molecules/SidebarItem";
 import permissionService from "@/services/api/permissionService";
 const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useAuth();

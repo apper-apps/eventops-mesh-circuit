@@ -61,9 +61,8 @@ class PermissionService {
       case 'budgets':
         return this.canAccessBudget(user, resourceId);
       case 'reservations':
-        return this.canAccessReservation(user, resourceId);
+return this.canAccessReservation(user, resourceId);
       case 'inventory':
-case 'inventory':
         return this.canAccessInventory(user, resourceId);
       default:
         return false;
