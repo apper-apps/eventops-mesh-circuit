@@ -10,65 +10,155 @@ import ApperIcon from "@/components/ApperIcon";
 const BarInventory = () => {
   const [filter, setFilter] = useState("all");
   
-  const inventory = [
+const inventory = [
     {
       id: 1,
-      name: "Cerveza Premium",
+      name: "Cerveza Suelta",
       category: "Cerveza",
-      currentStock: 240,
-      minStock: 100,
-      maxStock: 500,
+      currentStock: 150,
+      initialStock: 200,
+      finalStock: 150,
+      minStock: 50,
+      maxStock: 400,
       unit: "unidades",
-      price: 3.50,
-      supplier: "Distribuidora Norte",
+      costPrice: 2.50,
+      salePrice: 4.00,
+      supplier: "Distribuidora de Cervezas",
       status: "Disponible"
     },
     {
       id: 2,
-      name: "Whisky Premium",
-      category: "Licores",
-      currentStock: 15,
-      minStock: 20,
-      maxStock: 80,
-      unit: "botellas",
-      price: 45.00,
-      supplier: "Licores Selectos",
-      status: "Bajo stock"
-    },
-    {
-      id: 3,
-      name: "Vino Tinto Reserva",
-      category: "Vinos",
-      currentStock: 85,
-      minStock: 30,
-      maxStock: 150,
-      unit: "botellas",
-      price: 25.00,
-      supplier: "Bodega San Miguel",
+      name: "Bucket Tecate (10 unidades)",
+      category: "Cerveza",
+      currentStock: 25,
+      initialStock: 50,
+      finalStock: 25,
+      minStock: 10,
+      maxStock: 100,
+      unit: "buckets",
+      costPrice: 22.00,
+      salePrice: 35.00,
+      supplier: "Tecate Distribuidora",
       status: "Disponible"
     },
     {
+      id: 3,
+      name: "6-Pack Cerveza Corona",
+      category: "Cerveza",
+      currentStock: 8,
+      initialStock: 30,
+      finalStock: 8,
+      minStock: 15,
+      maxStock: 80,
+      unit: "paquetes",
+      costPrice: 12.00,
+      salePrice: 18.00,
+      supplier: "Corona Distribuciones",
+      status: "Bajo stock"
+    },
+    {
       id: 4,
-      name: "Agua Mineral",
-      category: "Sin alcohol",
-      currentStock: 2,
-      minStock: 50,
-      maxStock: 200,
-      unit: "cajas",
-      price: 8.00,
-      supplier: "Aguas del Valle",
-      status: "Crítico"
+      name: "6-Pack Cerveza Modelo",
+      category: "Cerveza",
+      currentStock: 18,
+      initialStock: 25,
+      finalStock: 18,
+      minStock: 10,
+      maxStock: 60,
+      unit: "paquetes",
+      costPrice: 13.50,
+      salePrice: 20.00,
+      supplier: "Modelo Distribuciones",
+      status: "Disponible"
     },
     {
       id: 5,
-      name: "Champán Premium",
-      category: "Espumosos",
-      currentStock: 45,
-      minStock: 20,
-      maxStock: 100,
+      name: "Coca-Cola Lata",
+      category: "Refrescos",
+      currentStock: 120,
+      initialStock: 150,
+      finalStock: 120,
+      minStock: 50,
+      maxStock: 300,
+      unit: "latas",
+      costPrice: 1.20,
+      salePrice: 2.50,
+      supplier: "Bebidas del Pacífico",
+      status: "Disponible"
+    },
+    {
+      id: 6,
+      name: "Pepsi Lata",
+      category: "Refrescos",
+      currentStock: 85,
+      initialStock: 100,
+      finalStock: 85,
+      minStock: 40,
+      maxStock: 250,
+      unit: "latas",
+      costPrice: 1.15,
+      salePrice: 2.50,
+      supplier: "Bebidas del Pacífico",
+      status: "Disponible"
+    },
+    {
+      id: 7,
+      name: "Agua Natural 500ml",
+      category: "Sin alcohol",
+      currentStock: 5,
+      initialStock: 100,
+      finalStock: 5,
+      minStock: 60,
+      maxStock: 300,
       unit: "botellas",
-      price: 80.00,
-      supplier: "Importadora Fine",
+      costPrice: 0.80,
+      salePrice: 2.00,
+      supplier: "Aguas Cristalinas",
+      status: "Crítico"
+    },
+    {
+      id: 8,
+      name: "Agua Mineral Sparkling",
+      category: "Sin alcohol",
+      currentStock: 35,
+      initialStock: 60,
+      finalStock: 35,
+      minStock: 30,
+      maxStock: 150,
+      unit: "botellas",
+      costPrice: 1.50,
+      salePrice: 3.00,
+      supplier: "Aguas Premium",
+      status: "Disponible"
+    },
+    {
+      id: 9,
+      name: "Tequila Premium (Producto Personalizado)",
+      category: "Licores",
+      currentStock: 12,
+      initialStock: 20,
+      finalStock: 12,
+      minStock: 8,
+      maxStock: 40,
+      unit: "botellas",
+      costPrice: 35.00,
+      salePrice: 65.00,
+      supplier: "Licores Especiales",
+      status: "Disponible"
+    },
+    {
+      id: 10,
+      name: "Mix de Jugos Naturales (Producto Personalizado)",
+      category: "Sin alcohol",
+      currentStock: 45,
+      initialStock: 50,
+      finalStock: 45,
+      minStock: 25,
+      maxStock: 100,
+      unit: "litros",
+      costPrice: 3.00,
+      salePrice: 6.50,
+      supplier: "Jugos Artesanales",
       status: "Disponible"
     }
   ];
@@ -93,8 +183,9 @@ const BarInventory = () => {
     return item.category === filter;
   });
 
-  const categories = ["Cerveza", "Licores", "Vinos", "Sin alcohol", "Espumosos"];
-  const totalValue = inventory.reduce((sum, item) => sum + (item.currentStock * item.price), 0);
+const categories = ["Cerveza", "Licores", "Refrescos", "Sin alcohol"];
+  const totalValue = inventory.reduce((sum, item) => sum + (item.currentStock * item.salePrice), 0);
+  const totalCost = inventory.reduce((sum, item) => sum + (item.currentStock * item.costPrice), 0);
   const lowStockItems = inventory.filter(item => item.status === "Bajo stock" || item.status === "Crítico").length;
 
   return (
@@ -175,7 +266,7 @@ const BarInventory = () => {
               />
             </div>
             
-            <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
+<Select value={filter} onChange={(e) => setFilter(e.target.value)}>
               <option value="all">Todas las categorías</option>
               <option value="low">Stock bajo</option>
               {categories.map(category => (
@@ -209,11 +300,11 @@ const BarInventory = () => {
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
                     <ApperIcon 
-                      name={
+name={
                         item.category === "Cerveza" ? "Beer" :
                         item.category === "Licores" ? "Wine" :
-                        item.category === "Vinos" ? "Wine" :
-                        item.category === "Sin alcohol" ? "Coffee" :
+                        item.category === "Refrescos" ? "Coffee" :
+                        item.category === "Sin alcohol" ? "Droplets" :
                         "Sparkles"
                       } 
                       size={24} 
@@ -221,13 +312,16 @@ const BarInventory = () => {
                     />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">{item.name}</h3>
+<h3 className="text-lg font-semibold text-white">{item.name}</h3>
                     <p className="text-slate-400">{item.category} • {item.supplier}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant={getStatusVariant(item.status)}>
                         {item.status}
                       </Badge>
-                      <span className="text-slate-400 text-sm">${item.price}/{item.unit}</span>
+                      <div className="flex items-center gap-3 text-sm">
+                        <span className="text-slate-400">Costo: ${item.costPrice}</span>
+                        <span className="text-green-400 font-medium">Venta: ${item.salePrice}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -236,6 +330,18 @@ const BarInventory = () => {
                   <div className="text-center">
                     <p className="text-slate-400 text-sm">Stock Actual</p>
                     <p className="text-2xl font-bold text-white">{item.currentStock}</p>
+                    <p className="text-slate-400 text-xs">{item.unit}</p>
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-slate-400 text-sm">Stock Inicial</p>
+                    <p className="text-xl font-semibold text-blue-400">{item.initialStock}</p>
+                    <p className="text-slate-400 text-xs">{item.unit}</p>
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-slate-400 text-sm">Stock Final</p>
+                    <p className="text-xl font-semibold text-purple-400">{item.finalStock}</p>
                     <p className="text-slate-400 text-xs">{item.unit}</p>
                   </div>
 
@@ -290,7 +396,10 @@ const BarInventory = () => {
                   {item.status}
                 </Badge>
               </div>
-              <p className="text-slate-400 text-sm mb-3">Stock: {item.currentStock} {item.unit}</p>
+<p className="text-slate-400 text-sm mb-3">
+                Stock: {item.currentStock} {item.unit} • 
+                Costo: ${item.costPrice} • Venta: ${item.salePrice}
+              </p>
               <Button size="sm" className="w-full" icon="ShoppingCart">
                 Reordenar
               </Button>
