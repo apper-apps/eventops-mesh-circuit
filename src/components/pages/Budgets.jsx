@@ -319,9 +319,8 @@ const Budgets = () => {
             Create Budget
           </Button>
         </Card>
-      )}
-
 )}
+
     </motion.div>
   );
 };
